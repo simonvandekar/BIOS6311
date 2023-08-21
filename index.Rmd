@@ -156,6 +156,12 @@ Here is a list of links to the lab activities.
 
 * [Week 1](https://vanderbilt.box.com/s/d7c8x5cza8fvtmk31y03vdf1ip42a96y)
 
+## Homework
+
+Here is a list of links for the homework.
+
+* [Homework 1](https://vanderbilt.box.com/s/ebnmqdmdcdqpg08c7wz3zbsw3iwwernu)
+
 # Glossary/Jargon {-}
 
 * **Reference distribution** - the standardized distribution used to compute probabilities. Examples include the Normal distribution, Chi-squared distribution, T distribution, and F distribution.
