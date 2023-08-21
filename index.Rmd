@@ -195,7 +195,9 @@ You can download the whole folder and work from there. There are the following f
 
 * `lab1_2.Rproj` - this is `R` project file that opens up a saved workspace in Rstudio.
 * `lab1_2.Rmd` - this is the Rmarkdown file that you can edit to complete your answers.
-* `lab1_2.html` - this is the output from the Rmarkdown file. When you add your answers and hit the knitr button in Rstudio it will compile this file. You can change the format between html/pdf/docx.
+* `lab1_2.html` - this is the output from the Rmarkdown file. When you add your answers and hit the Knit button in Rstudio it will compile this file. You can change the format between html/pdf/docx.
+
+The other files are intermediate files created after you push the Knit button.
 
 # Probability
 
