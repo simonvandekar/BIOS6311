@@ -56,7 +56,7 @@ library(tidyverse)
 library(RESI)
 ```
 
-# Coure information {-}
+# Course information {-}
 
 This document includes all the course notes for Vanderbilt Biostatistics BIOS6311 *Principles of Modern Biostatistics*.
 
