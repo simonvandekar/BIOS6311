@@ -56,19 +56,20 @@ library(tidyverse)
 library(RESI)
 ```
 
+# Coure information {-}
 
-# Bios 6311 Principles of Modern Biostatistics {-}
+This document includes all the course notes for Vanderbilt Biostatistics BIOS6311 *Principles of Modern Biostatistics*.
 
-These are the notes for Vanderbilt Biostatistics BIOS6311 *Principles of Modern Biostatistics*.
+## Syllabus {-}
 
-## Syllabus
+This document includes all the course notes for Vanderbilt Biostatistics BIOS6311 *Principles of Modern Biostatistics*.
 
 **Schedule:** Tuesdays/Thursdays 10:30am-12pm (in-person)\
 **Lab:** Tuesdays 4pm-5pm (in-person)\
 **Instructor:** [Simon Vandekar](https://simonvandekar.github.io/) (he/him/his)\
 **TA:** [Yeji Kuo](https://www.vanderbilt.edu/biostatistics-graduate/cpt/people/yeji-ko/)\
 **Office hours:** by appointment\
-**Email:** simon.vandekar@vumc.org. I do not check my vanderbilt.edu regularly.
+**Email:** simon.vandekar@vumc.org. I do not check my vanderbilt.edu email address, regularly.
 
 
 ### Overview
@@ -171,7 +172,7 @@ I might adapt course content based on the mine or the classes interests. This is
 
 
 
-# `R` and how to follow-along in this class
+# `R` and how to follow-along in this class {-}
 
 # Probability
 
