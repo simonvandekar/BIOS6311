@@ -191,12 +191,14 @@ Here is a list of links for the homework.
 
 I will use the whiteboard and Rstudio for teaching. The notes and code will be based of of what is available in this document.
 
+### Written notes
 Because I will be writing on the whiteboard for written notes, you can
 
 * Follow along with your own notebook.
 * Print the notes and add your own. To print the notes, Push the lines in the hover menu at the top to close the sidebar and then print to pdf or paper in your browser. Please print two-sided.
 * Save as a PDF and open in Notes app on a tablet where you can annotate the file.
 
+### Code notes
 The code examples in the course may be fully written in the notes, or they may be barebones that we complete together in class. I will try to update the code in this document, so that the code is completed here after we have written it in class. To follow along with `R` code you can
 
 * Create an Rmarkdown file with a section for each chunk of example code we run and complete the code as we complete it in class.
