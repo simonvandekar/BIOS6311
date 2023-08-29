@@ -180,6 +180,34 @@ Examples:
 ### PDFs and CDFs (and quantile functions)
 
 
+#### PDFs
+The PDF (probability density function) is the derivative of the CDF and often denoted with a lower case letter $f(x)$.
+For discrete random variables the PDF is call the PMF (probability mass function).
+
+```{r, echo=FALSE, fig.cap='Corresponding density functions.', fig.width=10}
+layout(matrix(1:4, nrow=1))
+x = seq(-3, 3, length.out=1000)
+plot(x, dnorm(x), type='l', main='Normal(0,1)', ylab='P(X=x)')
+x = seq(0, 10, length.out=1000)
+plot(x, dgamma(x, shape=1, rate=1/2), type='l', main='Gamma(1,1/2)', ylab='P(X=x)')
+x = seq(0, 15)
+plot(x, dpois(x, lambda=5), main='Poisson(5)', type='p', ylab='P(X=x)')
+x = seq(0, 1)
+plot(x, dbinom(x, size = 1, prob = 1/4), main='Bern(1/4)', type='p', ylab='P(X=x)', ylim=c(0,1))
+```
+
+#### PDFs continued {.flexbox .vcenter}
+The PDF can conceptually be thought of as $\mathbb{P}(X=x)$, for PMFs, that's exactly what it is. But, for continuous random variables the probability they take any value is equal to zero.
+These PDFs are functions with parameters:
+\[
+\begin{align*}
+\text{Normal: }& f(x; \mu, \sigma^2) = (2\pi\sigma^2)^{-1/2} \exp\left\{-\frac{1}{2\sigma^2}(x-\mu)^2 \right\} \\
+\text{Gamma: }& f(x; \alpha, \beta)  =  \frac{\beta^\alpha}{\Gamma(\alpha)} x^{\alpha-1} e^{-\beta x} \\
+\text{Poisson: }& f(x; \lambda)  =  \frac{\lambda^k\ e^{-\lambda}}{k!} \\
+\end{align*}
+\]
+
+The CDF (below) and PDF are useful because we never know what values the random variable will take, so we can integrate the PDF or use the CDF to figure out where they are most likely to fall.
 
 
 #### CDFs
@@ -207,6 +235,30 @@ x = seq(-1, 15, length.out=1000)
 plot(x, ppois(x, lambda=5), main='Poisson(5)', type='s', ylab='P(X<=x)')
 x = seq(-1, 2, length.out=1000)
 plot(x, pbinom(x, size = 1, prob = 1/4), main='Bern(1/4)', type='s', ylab='P(X<=x)')
+```
+
+
+##### Human Connectome Project Brain volume example
+
+
+![A brain.](figures/MRI_of_Human_Brain.jpeg){#id .class width=50% height=50%}
+
+* Human Connectome Project data
+* Study designed to understand how regions of the brain are interconnected
+
+
+
+```{r hcpVolHist, fig.width=5, fig.height=5}
+hcp = read.csv('../datasets/hcp/hcp.csv')
+mu = mean(hcp$FS_TotCort_GM_Vol, na.rm=T)
+sigma = sd(hcp$FS_TotCort_GM_Vol, na.rm=T)
+mu
+sigma
+
+x = seq(mu - 3*sigma, mu + 3*sigma, length.out=1000)
+fOfX = dnorm(x, mean = mu, sd=sigma)
+plot(x, fOfX, type='l', xlab='Brain volume', ylab='f(Brain Volume)')
+hist(hcp$FS_TotCort_GM_Vol, xlab='Brain Volume', xlim=c(mu - 3*sigma, mu + 3*sigma))
 ```
 
 
@@ -241,38 +293,35 @@ points(x, c(0,wordle2, 1), type='s', col='red')
 
 <center>
 ![Wordle results](figures/wordle.jpg){#id .class width=25%}
-![Wordle results](figures/wordle_lillie.jpg){#id .class width=25%}
+<!-- ![Wordle results](figures/wordle_lillie.jpg){#id .class width=25%} -->
 </center>
 
 
-#### PDFs
-The PDF (probability density function) is the derivative of the CDF and often denoted with a lower case letter $f(x)$.
-For discrete random variables the PDF is call the PMF (probability mass function).
+##### Human Connectome Project CDF example (continued)
 
-```{r, echo=FALSE, fig.cap='Corresponding density functions.', fig.width=10}
-layout(matrix(1:4, nrow=1))
-x = seq(-3, 3, length.out=1000)
-plot(x, dnorm(x), type='l', main='Normal(0,1)', ylab='P(X=x)')
-x = seq(0, 10, length.out=1000)
-plot(x, dgamma(x, shape=1, rate=1/2), type='l', main='Gamma(1,1/2)', ylab='P(X=x)')
-x = seq(0, 15)
-plot(x, dpois(x, lambda=5), main='Poisson(5)', type='p', ylab='P(X=x)')
-x = seq(0, 1)
-plot(x, dbinom(x, size = 1, prob = 1/4), main='Bern(1/4)', type='p', ylab='P(X=x)', ylim=c(0,1))
+* We can compute probabilities that people lie within a given region using the CDF.
+
+
+```{r, fig.width=5, fig.height=5}
+x = seq(mu - 3*sigma, mu + 3*sigma, length.out=1000)
+fOfX = dnorm(x, mean = mu, sd=sigma)
+plot(x, fOfX, type='l', xlab='Brain volume', ylab='f(Brain Volume)')
 ```
 
-#### PDFs continued {.flexbox .vcenter}
-The PDF can conceptually be thought of as $\mathbb{P}(X=x)$, for PMFs, that's exactly what it is. But, for continuous random variables the probability they take any value is equal to zero.
-These CDFs and PDFs are functions with parameters:
-\[
-\begin{align*}
-\text{Normal: }& f(x; \mu, \sigma^2) = (2\pi\sigma^2)^{-1/2} \exp\left\{-\frac{1}{2\sigma^2}(x-\mu)^2 \right\} \\
-\text{Gamma: }& f(x; \alpha, \beta)  =  \frac{\beta^\alpha}{\Gamma(\alpha)} x^{\alpha-1} e^{-\beta x} \\
-\text{Poisson: }& f(x; \lambda)  =  \frac{\lambda^k\ e^{-\lambda}}{k!} \\
-\end{align*}
-\]
 
-The CDF and PDF are useful because we never know what values the random variable will take, so we can integrate the PDF or use the CDF to figure out where they are most likely to fall.
+* Probability someone is between $450,000\mathrm{mm}^3$ and $450,000\mathrm{mm}^3$
+* Probability someone is less than $400,000\mathrm{mm}^3$.
+* probability someone is greater than$500,000\mathrm{mm}^3$
+
+```{r}
+# center
+pnorm(550000, mean=mu, sd=sigma) - pnorm(450000, mean=mu, sd=sigma)
+# lower tail
+pnorm(400000, mean=mu, sd=sigma)
+# upper tail
+1-pnorm(600000, mean=mu, sd=sigma)
+```
+
 
 
 #### Quantile functions {.flexbox .vcenter}
@@ -282,6 +331,23 @@ The quantile function is the inverse of the CDF.
 * For a given probability $p$, it spits out a value $Q(p)$ such that that $F(Q(p)) = p$.
 * The interpretation is that for a given probability $p$, There's a $p$ percent probability that the random variable will be below $Q(p)$.
 * Sometimes, it's possible to find the quantile function explicitly, but many times it isn't.
+* Also can call these "percentiles" if you multiply them by 100.
+
+
+##### HCP example
+
+* 5% of people have a brain volume larger than what value?
+* What is the middle value (median; .5 quantile) of brain volumes?
+* What is interquartile range (difference between .75 quantile and .25 quantile)?
+
+```{r}
+# 95 percentile of brain volume
+qnorm(1-0.05, mean=mu, sd=sigma)
+# Median
+qnorm(0.5, mean=mu, sd=sigma)
+# IQR
+qnorm(0.75, mean=mu, sd=sigma) - qnorm(0.25, mean=mu, sd=sigma)
+```
 
 
 
