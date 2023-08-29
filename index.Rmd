@@ -7,6 +7,7 @@ output:
     lib_dir: assets
     split_by: chapter
     code_folding: hide
+    self_contained: true
     config:
       toolbar:
         position: static
