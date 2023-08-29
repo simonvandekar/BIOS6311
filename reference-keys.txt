@@ -11,6 +11,12 @@ text
 class-resources
 diversity-and-inclusion
 course-outline
+labs
+homework-1
+class-notes
+written-notes
+code-notes
+labs-and-homeworks
 probability
 probability-review
 objectives

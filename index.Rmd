@@ -120,7 +120,7 @@ Previously I've done everything in Brightspace, but to make it more accessible, 
 
 * [Brightspace](https://brightspace.vanderbilt.edu/d2l/home/440983){target="_blank"} - For class communication, homework submission and grading.
 * [Pumble](https://invite.pumble.com/c15tkrv8wvq1y9rtla) - For class communication.
-* Box - For sharing datasets and files.
+* [Box](https://vanderbilt.box.com/s/xfpxeparbjeugr6q1oslexlr8r5y1ewd) - For sharing datasets and files.
 
 ### Diversity and inclusion:
 
@@ -152,7 +152,7 @@ I might adapt course content based on the mine or the classes interests. This is
 
 ## Labs
 
-Here is a list of links to the lab activities.
+All the shared files are [here](https://vanderbilt.box.com/s/xfpxeparbjeugr6q1oslexlr8r5y1ewd). Here is a list of links to the lab activities.
 
 * [Week 1](https://vanderbilt.box.com/s/d7c8x5cza8fvtmk31y03vdf1ip42a96y)
 
