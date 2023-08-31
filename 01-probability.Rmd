@@ -471,7 +471,12 @@ Start with the standardized normal distribution and use change of variables.
 
 * For $X\sim N(0,1)$, let $Y = X\sigma + \mu$.
 * What is $\E Y$?
-* Then $\P(Y<z) = \P((X\sigma+\mu)<z) = \P(X< (z - \mu)/\sigma) = \int_{-\infty}^{(z-\mu)/\sigma} \left(2\pi \right)^{-1/2} \exp\left\{-\frac{1}{2} x^2 \right\} dx= \int_{-\infty}^{y} \left(2\pi \sigma^2\right)^{-1/2} \exp\left\{-\frac{1}{2\sigma^2} (w-\mu)^2 \right\} dw$
+* Then 
+\begin{align*}
+\P(Y<z) = \P((X\sigma+\mu)<z) = \P(X< (z - \mu)/\sigma) \\
+= \int_{-\infty}^{(z-\mu)/\sigma} \left(2\pi \right)^{-1/2} \exp\left\{-\frac{1}{2} x^2 \right\} dx\\
+= \int_{-\infty}^{y} \left(2\pi \sigma^2\right)^{-1/2} \exp\left\{-\frac{1}{2\sigma^2} (w-\mu)^2 \right\} dw
+\end{align*}
 * This is the CDF a $N(\mu, \sigma^2)$.
 
 #### Properties of variance
@@ -584,7 +589,15 @@ For multivariate random variables the definition is similar
 ### Examples
 
 #### Insurance dataset children and region
-* In the insurance dataset, we can consider the probability of having a certain number of children living in a certain area.
+
+* The insurance dataset is in the `RESI` R package, which you can install with the following code
+
+```{r}
+install.packages('RESI')
+```
+
+* There are some cool multivariate distributions in this data set.
+* Consider the probability of having a certain number of children living in a certain area.
 
 ```{r}
 library(RESI) # contains insurance dataset
@@ -656,7 +669,7 @@ legend('topright', fill=cols[1:ncol(jointTab)], legend=colnames(jointTab), bty='
 ### Conditional means and variances
 
 * Once you have conditional probabilities, you can do all the same stuff with it that you would do with a regular random variable
-* For example, $\mathbb{E}(X \mid Y) = \sum_{x} x f_{X\mid Y}(x \mid y)$
+* For example, $\mathbb{E}(Y \mid X) = \sum_{y} y f_{y\mid x}(y \mid x)$
 
 Conditional expectation is just an expectation with respect to a conditional distribution.
 \[
@@ -727,9 +740,11 @@ legend('topright', fill=cols[1:nrow(condTab)], legend=rownames(condTab), bty='n'
 
 ```
 
+* Conditional probabilities are $\P(\text{N kids} | \text{Region})$.
 * This means that **they are independent if their CDFs or PDFs factor**!
 * Intuitively, two random variables are independent if the value of one does not affect the probability distribution of the other.
 * Mathematically, that implies $\P(X=x \mid Y=y) = \P(X=x)$ (this is a homework question).
+* Are charges and smoking independent?
 
 
 
@@ -751,6 +766,7 @@ Correlation is
 
 * Covariance implies dependence, but dependence does not imply covariance (homework question)
 * Independence implies zero covariance, but dependence does not imply nonzero covariance
+* The covariance can be zero between two random variables, but they can still be dependent.
 
 ### Properties of variances of sums
 

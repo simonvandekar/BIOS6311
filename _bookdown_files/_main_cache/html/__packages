@@ -9,3 +9,13 @@ stringr
 forcats
 lubridate
 RESI
+magrittr
+mvtnorm
+nlme
+sandwich
+clubSandwich
+lattice
+geepack
+Matrix
+lme4
+lmerTest

@@ -10,9 +10,11 @@ Today we will:
     + Math -> Simulations
     + Then we will create a simulation where the LLN doesn't work
 
-## Conceptual overview
+### Conceptual overview
 
 This is to illustrate the law of large numbers using some example data.
+
+* The law of large numbers describes what happens to the empirical average as it is taken over increasing sample sizes.
 
 ```{r, echo=TRUE}
 # read in student names
@@ -51,12 +53,12 @@ for(n in ns){
 * I wouldn't consider an estimator that doesn't satisfy the LLN
 
 
-## Simulations -> Math: illustrating the LLN with simulations
+### Simulations -> Math: illustrating the LLN with simulations
 
 
-### Initial simulation without convergence definition
+#### Initial simulation without convergence definition
 
-* First, let's choose a distribution (together as a class).
+* First, let's choose a distribution.
 * Then, let's initialize empty vectors, `x` and `means`.
 * For `n in 1:maxn`,
     + Draw a sample from our distribution and add it to `x`, `x<-c(x,<new random sample>)`.
@@ -99,14 +101,14 @@ Let's describe mathematically what we did.
 
 
 
-### Convergence of random variables
+#### Convergence of random variables
 **Definition:** $Y_n$ converges to $Y$ *in probability* if for all $\epsilon>0$, $\lim_{n\to\infty}\P(\lvert Y_n - Y \rvert \le \epsilon) = 1$ as $n\to\infty$.
 
 
 **Definition:** $Y_n$ converges *almost surely* to $Y$ if $\P(\lim_{n\to \infty}\lvert Y_n - Y \rvert =0) = 1$ as $n\to\infty$.
 
 
-## Math -> Simulations: adding convergence definition
+### Math -> Simulations: adding convergence definition
 
 How do we incorporate one of these convergence definitions into our simulations?
 
@@ -159,11 +161,10 @@ plot(1:maxn, P_XbarMinusp, type='l', xlab='', ylab='', ylim=c(0,1))
 # abline(h=, lty=2)
 ```
 
-## Module 2: Class 2
 
-## Formal definition of LLN
+### Formal definition of LLN
 
-### IID random variables
+#### IID random variables
 
 IID stands for independent and identically distributed.
 
@@ -172,7 +173,7 @@ For a sample $X_i, \ldots, X_n$:
 * Independence means that their probability distributions factor
 * Identical means $X_i \sim F_x$ (They all have the same distribution function).
 
-### Law of large numbers (Weak law)
+#### Law of large numbers (Weak law)
 
 * Weak LLN is about convergence in probability
 
@@ -194,23 +195,9 @@ Intuition about LLN. What is the mean (expected value) of $S_n/n$? What is the v
 
 
 
-<!-- ## Law of large numbers (Strong law) -->
-<!-- **Theorem (Durett, pg. 73):** Let $X_1, X_2, \ldots$, be iid random variables with $\E X_i = \mu$ and $\E \lvert X_i \rvert <\infty$. -->
-
-<!-- If $S_n = X_1 + \ldots + X_n$, then as $n\to \infty$, -->
-<!-- \[ -->
-<!-- S_n/n \to_a.s. \mu. -->
-<!-- \] -->
 
 
-
-Today we will 
-
-* Break the law of large numbers
-* Start to talk about the central limit theorem
-
-
-## How do we use theorems in research?
+#### How do we use theorems in research?
 
 1. Demonstrate that assumptions of theorem are satisfied for our case.
 2. Draw conclusion about our estimator.
@@ -221,7 +208,7 @@ What if assumptions are violated?
 * There are more precise statements that are necessary and sufficient.
 
 
-## Breaking the LLN: Cauchy distribution
+### Breaking the LLN: Cauchy distribution
 
 * What is a Cauchy distribution (ratio of normal random variables; t RV on 1 DoF)
 * The LLN can break if $\E \lvert X_i \rvert$ doesn't exist (is infinite). What does this mean?
@@ -282,7 +269,7 @@ The goals for today are:
 1. Illustrate the CLT using the Math -> Simulation approach with the Bernoulli distribution
 
 
-## Preliminary: Normalizing sums of random variables
+### Preliminary: Normalizing sums of random variables
 
 The CLT is about things that look like this:
 
@@ -291,7 +278,7 @@ The CLT is about things that look like this:
 * $Z = \sqrt{n} (\bar X - \mu)/\sigma$
 
 
-## Preliminary: The normal distribution
+### Preliminary: The normal distribution
 
 ![[Link](https://fortuitousconcatenation.blogspot.com/2008/11/echo-z-scores-and-percentiles.html)](figures/normal_distribution.png)
 
@@ -307,7 +294,7 @@ Things about the normal distribution:
 
 
 
-## Conceptual overview
+### Conceptual overview
 
 This is to illustrate the CLT numbers using some example data.
 
@@ -347,7 +334,7 @@ for(n in ns){
 
 
 
-## Preliminary: Convergence in distribution
+### Preliminary: Convergence in distribution
 **Definition:** A random variable $Y_n$ with distribution function $F_n(y)$ is said to *converge in distribution* to a limit $Y$ with distribution function $F(y)$ if, for all $y$ that are continuity points of $F$, $F_n(y) \to F(y)$.
 
 I'll denote it $Y_n\to_D Y$.
@@ -360,7 +347,7 @@ I'll denote it $Y_n\to_D Y$.
 In other words, the distance between the distributions goes to zero as $n$ gets larger.
 
 
-## The Central Limit Theorem
+### The Central Limit Theorem
 **The Central Limit Theorem (Durrett, pg. 124):** Let $X_1, X_2, \ldots$ be iid with $\E X_i = \mu$ and $\text{Var}(X_i) = \sigma^2 \in (0, \infty)$.
 
 If $\bar X_n = n^{-1} \sum_{i=1}^n X_i$, then
@@ -373,7 +360,7 @@ Comments:
 
 * We need the variance to be finite (stronger assumptions than LLN)
 
-## The Lindeberg-Feller Theorem
+### The Lindeberg-Feller Theorem
 <!-- **The Lindeberg-Feller Theorem (Durrett, pg. 124):**  For each $n$, let $X_{n,m}$, $1\le, m\le, n$, be independent random variables with $\E X_{n,m} = 0$. Suppose,  -->
 
 <!-- 1. $\sum_{m=1}^n \E X_{m,n}^2 \to \sigma^2>0$ -->
@@ -406,13 +393,11 @@ Comments:
 * CLTs are well studied, there are other ones for some what dependent variables.
 
 
-## Module 2: Class 9/27
-
 * Will review CLT statement
 * Will look at what it means for Bernoulli example and using simulations
 
 
-## Example with Bernoulli distribution
+### Example of CLT with Bernoulli distribution
 
 * The Bernoulli is appealing because we can assess the CLT mathematically.
 * Sum of Bernoulli RV is Binomial.
@@ -443,10 +428,10 @@ plot(ns, probDiffs, xlab='Sample size', ylab='Distribution error', main='CLT for
 abline(h=0, lty=2)
 ```
 
-## QQ-plot!
+### QQ-plot!
 
 
-## Binomial proportion: Another look using simulations
+#### Binomial proportion: Another look using simulations
 
 ```{r binomialSimulation, echo=TRUE, fig.height=3.5, fig.width=12, eval=TRUE}
 ns = seq(5, 100, by=10)
@@ -489,7 +474,7 @@ for(n in ns){
 
 
 
-## Comment about dependence in the CLT
+### Comment about dependence in the CLT
 
 For a bunch of RVs with zero mean and nonzero covariance
 \[
@@ -509,21 +494,20 @@ Comments:
   + We need the covariance terms to get "small enough" for the CLT to work.
   + For example, by things that are "far away" having small covariance.
 
-## Conclusions of CLT
+### Conclusions of CLT
 
 * The CLT allows us to make approximate probability statements for things that can be expressed as sums.
 * This is handy when we don't know the distribution of things.
 * Some form of independence is necessary.
 
 
-## Take home points of LLN and CLT
+### Take home points of LLN and CLT
 
 * LLN is about the convergence of the mean estimator to a constant.
 * CLT is about the convergence of the mean estimator times $\sqrt{n}$ to a normal distribution.
 * CLT is used a lot in statistics to make approximate probability statements.
 
 
-## Module 2: Last class
 
 * Questions on upcoming homework?
 * 
