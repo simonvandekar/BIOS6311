@@ -513,36 +513,7 @@ Comments:
 * 
 * Lab will be the one for module 2 if we have time. If not, you can use it to practice concepts on your own.
 
-## Pearson's correlation
 
-* Sampling two measurements on each subject $X_i$ $Y_i$.
-
-Correlation is a normalized variance
-\[
-\begin{align*}
-\rho = \text{Cor}(X,Y) = \frac{\text{Cov}(X,Y)}{\sqrt{\text{Var}(X)\text{Var}(Y)}}
-\end{align*}
-\]
-
-
-
-* It takes values between -1 and 1.
-* negative values means they two variables have a negative (approximately) linear relationship
-* positive means they have a positive (approximately) linear relationship
-* Correlation is not slope.
-  + A slope of zero implies no correlation
-
-![correlation](figures/rice_correlation.png){#id .class width=100% height=100%}
-
-
-Can estimate correlation with 
-
-\[
-\begin{align*}
-\hat\rho = \frac{\widehat{\text{Cov}}(X,Y)}{\sqrt{\widehat{\text{Var}}(X)\widehat{\text{Var}}(Y)}}
-= \frac{\sum_{i=1}^n(X_i - \bar X)(Y_i - \bar Y)}{\sqrt{\sum_{i=1}^n(X_i - \bar X)^2\sum_{i=1}^n(Y_i - \bar Y)^2}}
-\end{align*}
-\]
 
 ### Example: HCP data set
 

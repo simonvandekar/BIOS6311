@@ -592,7 +592,7 @@ For multivariate random variables the definition is similar
 
 * The insurance dataset is in the `RESI` R package, which you can install with the following code
 
-```{r}
+```{r, eval=FALSE}
 install.packages('RESI')
 ```
 
@@ -699,7 +699,6 @@ Expectation is linear because it is an integral. For example, for constants $a,b
 \[
 \mathbb{E}(aX + bY) = a \mathbb{E} X + b\mathbb{E}Y
 \]
-I'll often write it without parentheses (e.g. $\mathbb{E}aX$).
 
 #### Example: discrete and continuous joint distribution
 
@@ -723,6 +722,8 @@ knitr::kable(tab, row.names = TRUE, escape = FALSE )
 * Intuitively, this means that fixing one variable doesn't affect the distribution of the other.
 * Another way to express it is that $\mathbb{P}(X=x\mid Y=y) = \mathbb{P}(X=x)$.
 * The table is pretty close to independent.
+* Conditional probabilities are $\P(\text{N kids} | \text{Region})$.
+* This means that **they are independent if their CDFs or PDFs factor**!
 
 If the table above were perfectly independent, it might look like this:
 ```{r, fig.width=6}
@@ -740,10 +741,6 @@ legend('topright', fill=cols[1:nrow(condTab)], legend=rownames(condTab), bty='n'
 
 ```
 
-* Conditional probabilities are $\P(\text{N kids} | \text{Region})$.
-* This means that **they are independent if their CDFs or PDFs factor**!
-* Intuitively, two random variables are independent if the value of one does not affect the probability distribution of the other.
-* Mathematically, that implies $\P(X=x \mid Y=y) = \P(X=x)$ (this is a homework question).
 * Are charges and smoking independent?
 
 
@@ -764,9 +761,68 @@ Correlation is
 \end{align*}
 \]
 
-* Covariance implies dependence, but dependence does not imply covariance (homework question)
-* Independence implies zero covariance, but dependence does not imply nonzero covariance
+* Covariance implies dependence, but dependence does not imply covariance (homework question).
+* Independence implies zero covariance, but dependence does not imply nonzero covariance.
 * The covariance can be zero between two random variables, but they can still be dependent.
+* Covariance summarizes the linear dependence between two random variables.
+
+### Pearson's correlation
+
+* Sampling two measurements on each subject $X_i$ $Y_i$.
+
+Correlation is a normalized variance
+\[
+\begin{align*}
+\rho = \text{Cor}(X,Y) = \frac{\text{Cov}(X,Y)}{\sqrt{\text{Var}(X)\text{Var}(Y)}}
+\end{align*}
+\]
+
+
+
+* It takes values between -1 and 1.
+* negative values means they two variables have a negative (approximately) linear relationship
+* positive means they have a positive (approximately) linear relationship
+* Correlation is not slope.
+  + A slope of zero implies no correlation
+
+![correlation](figures/rice_correlation.png){#id .class width=100% height=100%}
+
+
+Can estimate correlation with 
+
+\[
+\begin{align*}
+\hat\rho = \frac{\widehat{\text{Cov}}(X,Y)}{\sqrt{\widehat{\text{Var}}(X)\widehat{\text{Var}}(Y)}}
+= \frac{\sum_{i=1}^n(X_i - \bar X)(Y_i - \bar Y)}{\sqrt{\sum_{i=1}^n(X_i - \bar X)^2\sum_{i=1}^n(Y_i - \bar Y)^2}}
+\end{align*}
+\]
+
+#### Examples
+
+```{r, fig.width=2.5}
+plot(insurance[,'age'], insurance$charges, ylab='Charges', xlab='Age', main=paste('Age', 'and', 'Charges') )
+cor(insurance[,'age'], insurance$charges)
+```
+
+#### Examples
+
+* Dependent but uncorrelated
+
+```{r, fig.width=6, fig.height=6}
+par(mfrow=c(2,1))
+X = rnorm(100)
+Y = X^2
+plot(X, Y, main='Uncorrelated dependent no noise')
+abline(lm(Y ~ X))
+cor(X,Y)
+
+X = rnorm(100)
+Y = X^2 + rnorm(100)
+plot(X, Y, main='Uncorrelated dependent with noise')
+abline(lm(Y ~ X))
+cor(X,Y)
+```
+
 
 ### Properties of variances of sums
 
