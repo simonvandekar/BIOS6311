@@ -181,6 +181,7 @@ Here is a list of links for the homework.
 * **Estimator** - a statistic used to estimate a parameter. 
 * **Estimate** - a function of an observed sample used to estimate a parameter (not random).
 * **Coverage** - The proportion of the time that an interval captures the true value of the parameter.
+* **Consistent estimator** - an estimator that converges to the target parameter as the sample size gets bigger.
 * **Standard error** - the standard deviation of a statistic.
 
 

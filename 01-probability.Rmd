@@ -536,7 +536,7 @@ Another example
 
 | | It's not precipitating | It's raining  | It's snowing |
 |-------|:----:|:----:|:----:|
-I don't bring umbrella | 0.05 | 0.17 | 0.02 |
+I don't bring umbrella | 0.03 | 0.17 | 0.02 |
 I bring umbrella | 0.35 | 0.40 | 0.03 |
 
 
@@ -549,7 +549,7 @@ F_W(B) = \P(W \in B).
 
 If $W$ has a density then we can also write for values $x$ and $y$ (in the appropriate domain)
 \[
-\P(W \in B) = \int_{\mathcal{B}} f_W(x, y)dx dy,
+\P(W \in B) = \int_{B} f_W(x, y)dx dy,
 \]
 where $f_W$ is the PDF or PMF of $W = (X,Y)$.
 
@@ -757,7 +757,7 @@ Expand this and derive the other formula
 Correlation is
 \[
 \begin{align*}
-\text{Cor}(X,Y) = \frac{\text{Cov}(X,Y)}{\sqrt{\text{Var}(X)\text{Var}(Y)}}
+\text{Cor}(X,Y) = \frac{\text{Cov}(X,Y)}{\sqrt{\text{Var}(X)\text{Var}(Y)}} \in [-1,1]
 \end{align*}
 \]
 
@@ -873,14 +873,23 @@ The law of total variance states that
 
 ### Objectives
 
-Today we will
-
-
 * Talk about parameters, estimates, and estimators
 * Talk about how to assess estimators by comparing their variance and bias
 
 
 
+### Example: healthy sleep
+
+![Startsleeping.org](figures/sleep-needs-infographic.png){#id .class width=30%}
+
+* For this example let's look at the sleep questionnaire from the HCP
+* What proportion of people get healthy sleep (assuming 7-9 hours).
+
+```{r}
+hcp = read.csv('../datasets/hcp/hcp.csv')
+hist(hcp$PSQI_AmtSleep, main='Nightly sleep', xlab='Hours')
+hcp$healthySleep = ifelse(hcp$PSQI_AmtSleep<=9 & hcp$PSQI_AmtSleep>=7, 1, 0)
+```
 
 
 
@@ -888,23 +897,23 @@ Today we will
 ### Statistics is a way to learn about the world from a data set
 All three statistical philosophies we will discuss view research questions as trying to learn about an unknown parameter.
 
-For now, let's work with the question, "What is the proportion of people in the united states who have used alcohol in the last 30 days?"
+For now, let's work with the question, "What is the proportion of people in the united states who get a healthy amount of sleep?"
 
 1. What is my parameter of interest (target parameter)?
-    + Descriptively -- proportion of people who have used alcohol
+    + Descriptively -- proportion of people who get a healthy amount of sleep
     + Mathematically -- call this value $p$ 
 2. What is my population of interest?
     + Descriptively -- The United States population
     + Quantitatively two possible things
       * Distribution defined by the model below in point 4. $\text{Be}(p)$
-      * Unknown statistical distribution that gives rise to how someone in the US answers the question, "have you consumed alcohol in the last 30 days?".
+      * Unknown statistical distribution that gives rise to how whether someone reports between  7-9 hours of sleep.
 3. What is a data point?
-    + An answer from an individual in the population "yes"/"no" to the survey question. Coded as 1/0.
+    + An answer from an individual in the population to the survey question. Coded as 1/0 if they do/don't get 7-9 hours of sleep.
 4. What model can I use to describe how I get a data point?
     + Most obvious one is $X_i \sim \text{Be}(p)$, where $p$ is the parameter in point 1.
 
 
-### A random sample for the alcohol question
+### A random sample
 A random sample is a collection of independent random variables that represent potential data points.
 
 Let $X_i \sim \text{Be}(p)$ for $i=1,\ldots, n$.
@@ -934,9 +943,10 @@ which we know is pretty reasonable since $\E \bar X = p$.
  * We can study the properties of estimators to learn about how they behave.
  * If we like an estimator we can compute an estimate using our sample.
  * We can use features of our estimator to make probabilistic statements about what might happen if we repeat our study. **Dataset-to-dataset variability**
+ * This perspective is considered to be the *Frequentist* philosophy of Statistics.
  
  
-### Properties of estimators
+#### Properties of estimators
  
  Some common metrics are
  
@@ -955,9 +965,21 @@ which we know is pretty reasonable since $\E \bar X = p$.
  \E (\hat p - p)^2
  \]
 
-### Bias, variance, and MSE of the proportion estimator
+* **Consistency:** this describes what happens to the estimator as $n\to\infty$
+\[
+\hat p \to_P p
+\]
+* The arrow is convergence in probability. More on this later.
 
-* The bias of the proportion estimator (used to estimate the proportion of people who regularly drink alcohol) is:
+
+* **Asymptotically unbiased:** is a less strong statement of what happens to the estimator as $n\to\infty$
+\[
+\E \hat p \to p
+\]
+
+#### Bias, variance, and MSE of the proportion estimator
+
+* The bias of the proportion estimator (used to estimate the proportion of people who get enough sleep) is:
 \[
 \E( \hat p - p) = 0
 \]
@@ -974,20 +996,17 @@ which we know is pretty reasonable since $\E \bar X = p$.
 We will come back to this example to construct confidence intervals in the next lecture.
 
 
-### NSDUH: example of bias, variance, and MSE
+#### HCP: example of bias, variance, and MSE
 
-* In NSDUH data
+* In HCP data
 
 ```{r}
-
-puf = readRDS('../datasets/nsduh/puf.rds')
-p = mean(puf$alcmon=='yes')
-
-
-
 # Show what Bias and Variance mean in NSDUH data using simulations
 nstudies = 100000
-n = 1000
+
+p = mean(hcp$healthySleep)
+
+n = 100
 phats = rep(NA, nstudies)
 for(study in 1:nstudies){
   # random sample
@@ -1000,7 +1019,7 @@ for(study in 1:nstudies){
 mean(phats)
 hist(phats)
 # variance of phat across the simulations
-var(phats) # for n=100 this was 0.002527289
+var(phats)
 # what the variance should be equal to
 p * (1-p)/n
 ```
@@ -1018,12 +1037,6 @@ To reiterate:
 In statistics, probability is used to define and describe the behavior of estimators.
 
 
-<!-- In the last class we -->
-
-<!-- * Defined a parameter (example was "$p$", proportion of US population who has used alcohol in the last 30 days). -->
-<!-- * Used the concept of a random sample to compute an estimator of the parameter -->
-<!--     + We assessed our estimator with three metrics (Bias, Variance, and Mean Square Error) -->
-
 
 * Often, the distribution of an estimator is makes it too hard to find the bias, variance, and MSE of the estimator.
 * In this case, we use simulations to *estimate* the bias, variance, and MSE of an estimator.
@@ -1031,7 +1044,7 @@ In statistics, probability is used to define and describe the behavior of estima
   + Simulations can be used to estimate the bias and variance when it is too hard to find mathematically.
   + Sometimes, the parameter of interest is not distributional parameter.
 
-### Example for today: multiplexed immunofluorescence (mIF) microscopy
+### Another example: multiplexed immunofluorescence (mIF) microscopy
 
 * mIF imaging uses antibody markers to identify protein in tissue samples.
 * The protein Beta-catenin is known to be higher in tumor cells.
@@ -1062,7 +1075,7 @@ hist(bc, main='Beta Catenin Histogram', xlab='Marker count')
 
 ### A Gamma model for Beta-catenin concentration
 
-* Previously, we defined the parameter of interest $p$ based on what we were interested in the alcohol problem and it also happened to be the parameter of the Bernoulli distribution.
+* Previously, we defined the parameter of interest $p$ based on what we were interested in the sleep problem and it also happened to be the parameter of the Bernoulli distribution.
 * In this example that is not the case.
 
 * Let $X_i$ denote a randomly drawn cell from the tissue image.
