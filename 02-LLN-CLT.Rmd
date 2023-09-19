@@ -104,8 +104,13 @@ Let's describe mathematically what we did.
 #### Convergence of random variables
 **Definition:** $Y_n$ converges to $Y$ *in probability* if for all $\epsilon>0$, $\lim_{n\to\infty}\P(\lvert Y_n - Y \rvert \le \epsilon) = 1$ as $n\to\infty$.
 
+* "Eventually, every world will have $Y_n$ within $\epsilon$ of $Y$."
+* "The probability that $Y_n$ is within $\epsilon$ of $Y$ goes to 1."
 
 **Definition:** $Y_n$ converges *almost surely* to $Y$ if $\P(\lim_{n\to \infty}\lvert Y_n - Y \rvert =0) = 1$ as $n\to\infty$.
+
+* "There is not a world where $Y_n$ does not converge to $Y$."
+* "The probability $Y_n$ does not converge to $Y$ is zero."
 
 
 ### Math -> Simulations: adding convergence definition
@@ -118,8 +123,8 @@ How do we incorporate one of these convergence definitions into our simulations?
     * For `n in 1:maxn`,
         + Draw a sample from our distribution and add it to `x`, `x<-c(x,<new random sample>)`.
         + Compute the mean of `x` and save it in another vector `means[sim,n]<- mean(x)`.
-* Use `means` to compute $\P(\lvert \bar X_n - \E X_i \rvert > \epsilon)$.
-* Plot $\P(\lvert \bar X_n - \E X_i \rvert > \epsilon)$ as a function of `n`.
+* Use `means` to compute $\P(\lvert \bar X_n - \E X_i \rvert < \epsilon)$.
+* Plot $\P(\lvert \bar X_n - \E X_i \rvert < \epsilon)$ as a function of `n`.
 
 
 ```{r, LLNconvergence, echo=TRUE, cache=TRUE}
@@ -184,7 +189,7 @@ If $S_n = X_1 + \ldots + X_n$, then as $n\to \infty$,
 S_n/n \to_p \mu.
 \]
 
-Better weak laws can allow some dependence among the observations and usually just require that $\E X_i^2 < \infty$. Check out google if you're interested.
+Better weak laws can allow some dependence among the observations and usually just require that $\E X_i^2 < \infty$ (a slightly stronger assumption than $\E \lvert X_i \rvert <\infty$). Check out google if you're interested.
 
 The strong law is about almost sure convergence and doesn't require any further assumptions.
 
@@ -339,7 +344,7 @@ for(n in ns){
 
 I'll denote it $Y_n\to_D Y$.
 
-* Let's unpack the notation $F_n(y) \to F(y)$. This means for any given $y$ and $\epsilon>0$ there exists $n$ such that,
+* Let's unpack the notation $F_n(y) \to F(y)$. This means for any given $y$ and $\epsilon>0$ there exists $N$ such that for all $n\ge N$,
 \[
 \lvert F_n(y) - F(y)\rvert < \epsilon.
 \]
@@ -409,7 +414,7 @@ Comments:
 
 So how do we evaluate this:
 
-* Pick a value for $p$ and.
+* Pick a value for $p$.
 * Choose a vector for  $n$ and $z$.
 * Compare the CDFs by the sample size.
 

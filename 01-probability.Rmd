@@ -906,7 +906,7 @@ For now, let's work with the question, "What is the proportion of people in the 
     + Descriptively -- The United States population
     + Quantitatively two possible things
       * Distribution defined by the model below in point 4. $\text{Be}(p)$
-      * Unknown statistical distribution that gives rise to how whether someone reports between  7-9 hours of sleep.
+      * Unknown statistical distribution that gives rise to whether someone reports between 7-9 hours of sleep.
 3. What is a data point?
     + An answer from an individual in the population to the survey question. Coded as 1/0 if they do/don't get 7-9 hours of sleep.
 4. What model can I use to describe how I get a data point?
@@ -993,7 +993,7 @@ which we know is pretty reasonable since $\E \bar X = p$.
 \]
 * The MSE is the same as the variance since $\hat p$ is unbiased.
 
-We will come back to this example to construct confidence intervals in the next lecture.
+We will come back to this example to construct confidence intervals later.
 
 
 #### HCP: example of bias, variance, and MSE
@@ -1004,7 +1004,7 @@ We will come back to this example to construct confidence intervals in the next 
 # Show what Bias and Variance mean in NSDUH data using simulations
 nstudies = 100000
 
-p = mean(hcp$healthySleep)
+p = 0.6
 
 n = 100
 phats = rep(NA, nstudies)
@@ -1106,7 +1106,7 @@ The estimators are
 * Instead, let's use simulations to assess the bias, variance, and MSE of these estimators.
 
 ### Concept of simulation study
-* The bias, variance, and MSE are defined with respect to distribution of the test statistic across repeated samples of the data.
+* The bias, variance, and MSE are defined with respect to the distribution of the statistic across repeated samples of the data.
 * If I can repeat the experiment in `R` multiple times, then I can see multiple random versions of the estimator.
 * A simulation is an experiment to study what happens across experiments.
 
@@ -1152,7 +1152,7 @@ for(alphaind in 1:length(alphas) ){
       results = data.frame(muHat = rep(NA, nsim), alphaTilde=rep(NA, nsim), betaTilde=rep(NA, nsim) )
       for(sim in 1:nsim){
         
-        # sample a data set of size n from some random variable
+        # sample a data set of size n from a random variable whose distribution is determined by alpha and beta
         x = rgamma(n, shape=alpha, rate=beta)
         
         # compute estimators
