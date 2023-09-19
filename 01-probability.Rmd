@@ -996,7 +996,9 @@ which we know is pretty reasonable since $\E \bar X = p$.
 We will come back to this example to construct confidence intervals later.
 
 
-#### HCP: example of bias, variance, and MSE
+### HCP: example of bias, variance, and MSE
+
+
 
 * In HCP data
 
