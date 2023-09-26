@@ -32,7 +32,7 @@ ns = c(10, 50, 100, 200, 300, 400, 500)
 
 for(n in ns){
   # Each person in the class is performing a study of smoking
-  studies = lapply(students$First.Name, function(student) sample(triedCigs, size=n))
+  studies = lapply(c(students$First.Name, 'Kun', 'Simon'), function(student) sample(triedCigs, size=n))
   names(studies) = students$First.Name
   
   # get the mean for each person's study
@@ -320,7 +320,7 @@ sigma = sqrt(var(triedCigs))
 
 ns = c(5, 10, 50, 100, 200, 300, 400, 500)
 
-students = rep(students$First.Name, 100)
+students = rep(c(students$First.Name, 'Kun', 'Simon'), 100)
 
 layout(matrix(1:8, nrow=2, byrow=TRUE))
 for(n in ns){
