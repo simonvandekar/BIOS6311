@@ -2,7 +2,7 @@
 
 # Law of Large Numbers and Central Limit Theorem
 
-Today we will:
+In this section we will:
 
 * Introduce the Law of Large Numbers (LLN)
 * We will use simulations to demonstrate the LLN
@@ -243,7 +243,7 @@ for(sim in 1:nsim){
   meansout[sim,] = means
 }
 
-P_XbarMinusp = colMeans(abs(meansout)>epsilon)
+P_XbarMinusp = colMeans(abs(meansout)<epsilon)
 
 plot(1:maxn, P_XbarMinusp, type='l', xlab='', ylab='', ylim=c(0,1))
 
@@ -529,9 +529,8 @@ Comments:
 
 * Human Connectome Project data
 * Study designed to understand how regions of the brain are interconnected
-*
 
-```{r TotalVol}
+```{r TotalVol, fig.width=5, fig.height=5}
 hcp = read.csv('../datasets/hcp/hcp.csv')
 corr = cor(hcp$FS_Total_GM_Vol, hcp$FS_TotCort_GM_Vol, use = 'pairwise.complete.obs')
 plot(hcp$FS_Total_GM_Vol, hcp$FS_TotCort_GM_Vol, xlab='Gray Matter Vol', ylab='Cortical GM Vol', main='Cortical GM Volume vs total GM vol')
