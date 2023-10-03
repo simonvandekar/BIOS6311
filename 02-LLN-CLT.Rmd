@@ -47,7 +47,7 @@ for(n in ns){
 
 
 
-## Law of Large Numbers overview
+## Law of Large Numbers
 
 * The LLN is a tool we can use to say that the average of a sample is close to its expected value (and get's closer with larger sample sizes).
 * I wouldn't consider an estimator that doesn't satisfy the LLN
