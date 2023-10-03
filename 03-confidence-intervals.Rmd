@@ -1,0 +1,792 @@
+# Confidence intervals
+
+## Recap on bias assessment
+
+* Let's do some more practice on computing bias using simulations and analytically.
+* Consider the NSDUH data where the probability of the event is small.
+* E.g. few people in the population have used PCP
+
+```{r, echo=TRUE}
+set.seed(555)
+puf = readRDS('../datasets/nsduh/puf.rds')
+pcptab = table( puf$pcpflag)
+pcptab/sum(pcptab)
+
+n = 50
+# all "no"s
+pcpsamp = sample(puf$pcpflag, size = n)
+
+pcpsamp
+
+```
+
+
+* In cases like this, sometimes people recommend using a modified estimator of $p$,
+\[
+\tilde p = \frac{\sum_{i=1}^n X_i + 1/2}{n + 1},
+\]
+which adds 1/2 observation to the "yes" category and 1/2 observation to the "no" category.
+
+* What is expected value of $\tilde p$?
+* Plot the bias of $\tilde p$.
+
+```{r, echo=TRUE}
+n = 1:200
+ps = c(0.01, 0.1, 0.25, 0.45)
+for(p in ps){
+  ptildeBias = (n * p + 0.5)/(n+1) - p
+  # remove y-axis limits to rescale
+  # divide by p for percent bias
+  plot(n, ptildeBias/p, xlab='n', ylab='Bias(ptilde)', type='l', main=paste0('p=',p) )
+  abline(h=0)
+}
+```
+
+We can also run simulations to assess the bias and the curves should agree with the results that we found in the other plots.
+
+```{r, echo=TRUE}
+nsim = 10000
+n = 1:200
+ns = c(10, 25, 50, 100, 200)
+ps = c(0.01, 0.1, 0.25, 0.45)
+for(p in ps){
+  # sample data for each sample size
+  samps = replicate(nsim, {(rbinom(length(ns), size = ns, p) + 1/2)/(ns+1)} )
+  # take mean across simulations
+  simBias = rowMeans(samps) - p
+  
+  ptildeBias = (n * p + 0.5)/(n+1) - p
+  # divide by p for percent bias
+  plot(n, ptildeBias/p, xlab='n', ylab='Bias(ptilde)', type='l', main=paste0('p=',p) )
+  points(ns, simBias/p, type='b')
+  abline(h=0)
+}
+```
+
+
+
+
+## Confidence intervals for a mean
+
+Today we will:
+
+* Introduce a confidence interval for normally distributed data
+* We will use spinal cord imaging to study these confidence intervals
+* We will run a simulation to understand what the confidence interval means about dataset-to-dataset variability
+
+
+
+
+### Multiple sclerosis in the spinal cord
+
+* [Seth Smith](https://vuiis.vumc.org/bio/seth.smith)'s research team is developing advanced spinal cord magnetic resonance imaging sequences to study multiple sclerosis (MS).
+* These new sequences are making it possible to study the spinal cord in more detail through development and aging
+* Today our research question is **What is the cross-sectional area of the C3 segment of the spinal cord?**
+
+
+
+#### Spinal cord anatomy
+
+<div class="centered">
+![](figures/Spinal-Cord.png){ width=30% }
+</div>
+
+<div class="centered">
+![](figures/spinal_cord_image.jpeg){ width=30% }
+</div>
+* The cord section we are looking at is cervical section C3 (near the top).
+* Damage here affects a large portion of the body.
+
+
+#### Seth's interest in the spinal cord
+
+* MS is a progressive disease associated with demyelination of neurons (reduces signaling efficiency) that has significant detriment on many aspects of daily life, with motor symptoms being the most common.
+* MRI has almost exclusively focused on the brain in MS and associated MRI-derived brain lesion measures with severity of MS symptoms
+* Seth pointed out to the MS community that there are lesions in the spinal cord that scientists haven't paid as much attention to.
+
+
+
+#### Characterization of the C3 cross-sectional area
+
+
+* What random variable models might be appropriate for these data?
+
+<center>
+```{r, echo=TRUE}
+load('../datasets/smith_cervical_sc/tpmf.rdata')
+
+cex=1.5
+par(mgp=c(1.7,.7,0), lwd=1.5, lend=2, cex.lab=0.8*cex, cex.axis=0.8*cex, cex.main=1*cex, mfrow=c(1,1), mar=c(2.8,2.8,1.8,.2), bty='l', oma=c(0,0,2,0))
+# histogram of C3 CSA
+hist(mf$`C3 CSA`, main='C3 CSA', xlab='C3 CSA', freq=F)
+lines(seq(min(mf$`C3 CSA`), max(mf$`C3 CSA`), length.out=200), dnorm(seq(min(mf$`C3 CSA`), max(mf$`C3 CSA`), length.out=200), mean = mean(mf$`C3 CSA`), sd = sd(mf$`C3 CSA`)))
+```
+</center>
+
+* What is a good model for these data?
+
+
+#### CIs conceptually
+
+The concept of a CI highlights the distinction between a parameter, estimate, and estimator.
+
++ What is the parameter?
++ What is an estimate of the parameter?
++ What is an estimator of the parameter, notationally?
+
+The concept of an estimator allows us to make probabilistic statements about the procedures we execute in our dataset.
+
+
+### Confidence interval definition 
+
+* Confidence intervals are an interval obtained from a sample that contains the true value of the parameter with a given probability.
+\[
+P\{L(X_1, \ldots, X_n) \le p < U(X_1, \ldots, X_n) \} = 1-\alpha,
+\]
+for a given value $\alpha \in (0,1)$.
+
+* Note what things are random here (the end points). The parameter is fixed.
+
+<!-- * This will be our framework for answering a scientific question (in this course): -->
+<!--   + We'll identify a scientific question (here, about the spinal cord) -->
+<!--   + We'll explore a few methods, and identify a metric for evaluation -->
+<!--   + We'll evaluate the methods using simulations and pick the best one -->
+<!--   + Then we'll interpret the results with the best method -->
+
+
+
+
+### Known variance confidence interval for the mean
+
+* Let's assume our spinal cord data $X_1, \ldots X_n \sim N(\mu, \sigma^2)$ are IID and normally distributed.
+* The empirical mean is an estimator for this value
+\[
+\hat\mu = n^{-1}\sum_{i=1} X_i.
+\]
+* Let's (unrealistically) assume that $\sigma^2$ is known.
+
+
+#### The interval derivation
+
+* The sum of IID normals is normal $N(\mu, \sigma^2/n)$.
+* This is *exact* (not an approximation).
+* What is the distribution of $\sqrt{n}(\hat\mu - \mu)/\sigma$?
+* We can construct an $\alpha$ probability confidence interval for $\mu$ using this fact.
+\[
+\begin{align*}
+\P(z_{\alpha/2} < Z < z_{1-\alpha/2} ) &
+= \Phi(z_{1-\alpha/2}) - \Phi(z_{\alpha/2} ) \\
+& = 1-\alpha/2 - \alpha/2\\
+&= 1-\alpha
+\end{align*}
+\]
+
+
+So we can create the interval
+\[
+\begin{align*}
+\P(z_{\alpha/2} < Z < z_{1-\alpha/2} )
+& = \P(z_{\alpha/2} < \sqrt{n}(\hat\mu - \mu)/\sigma < z_{1-\alpha/2} )
+\end{align*}
+\]
+
+
+
+## Computing confidence intervals
+
+* Recap of constructing normal confidence interval
+* Computing the confidence interval in the spinal cord data
+
+### Constructing the confidence interval in the Spinal cord data set
+
+```{r, echo=TRUE}
+x = mf$`C3 CSA`
+alpha = 0.01
+
+# get n
+n = length(x)
+# get the mean
+muHat = mean(x)
+# get the sd
+stdev = sqrt(var(x)) # sd(x)
+# get z_alpha/2 and z_(1-alpha/2)
+qnorm(1-alpha/2)
+zalpha = qnorm(1- alpha/2)
+# construct the interval
+interval = c(muHat - zalpha * stdev /sqrt(n), muHat + zalpha * stdev /sqrt(n) )
+
+hist(mf$`C3 CSA`, main='C3 CSA', xlab='C3 CSA', freq=F)
+lines(seq(min(mf$`C3 CSA`), max(mf$`C3 CSA`), length.out=200), dnorm(seq(min(mf$`C3 CSA`), max(mf$`C3 CSA`), length.out=200), mean = mean(mf$`C3 CSA`), sd = sd(mf$`C3 CSA`)))
+abline(v=interval, lty=2, lwd=2)
+
+# What is the interpretation of this interval
+
+```
+
+a. The mean in my data set, $\bar X_n$, lies within this interval with probability 1-alpha.
+b. This interval contains the true mean parameter with probability 1-alpha.
+c. The procedure we used to create this interval captures the mean parameter 1-alpha% of the time.
+d. Across a large number of samples, approximately (1-alpha)% of the intervals will contain the true value of the parameter.
+
+
+### Dataset-to-dataset variability
+
+
+```{r, fig.width=10, fig.height=5, echo=TRUE}
+mu = 1
+sigma = 0.8
+n = 500
+nsim = 100
+alpha = 0.05
+CIs = data.frame(mean=rep(NA, nsim), lower=rep(NA, nsim), upper=rep(NA, nsim))
+for(sim in 1:nsim){
+  # draw a random sample
+  X = rnorm(n, mean=mu, sd=sigma)
+  stdev = sd(X)
+  # construct the confidence interval
+  CIs[sim, ] = c(mean(X), mean(X) + c(-1,1)*qnorm(1-alpha/2)*stdev/sqrt(n))
+}
+CIs$gotcha = ifelse(CIs$lower<=mu & CIs$upper>=mu, 1, 2)
+# range(c(CIs$lower, CIs$upper))
+plot(1:nsim, CIs$mean, pch=19, ylim = c(0,2), main=paste(nsim, 'experiments'), col=CIs$gotcha )
+segments(x0=1:nsim, y0=CIs$lower, y1=CIs$upper, col=CIs$gotcha)
+abline(h=mu, lty=2 )
+
+```
+
+
+
+
+### Estimating the variance
+
+* Almost always, the variance of the data is unknown.
+* We need an estimate of $\sigma^2$ from the data. Two are common
+\[
+\begin{align*}
+\tilde \sigma^2 & = n^{-1} \sum_{i=1}^n X_i \text{ (maximum likelihood estimator)}\\
+\hat \sigma^2 & = (n-1)^{-1} \sum_{i=1}^n X_i \text{ (unbiased estimator)}\\
+\end{align*}
+\]
+* We'll focus on the second estimator.
+
+
+
+
+### Unknown variance approximate interval
+
+
+* What is the distribution of $\sqrt{n}(\hat\mu - \mu)/\tilde\sigma$?
+* If we don't know the distribution, then there is theoretical justification (using Slutsky's theorem) to say
+\[
+\sqrt{n}(\hat\mu - \mu)/\hat\sigma \sim N(0,1) \text{ (approximately)}
+\]
+* Approximately means *asymptotically*, which means that if we can control how big our sample is, then we can make this approximation as precise as we want by choosing a big enough sample size.
+
+* This suggests a confidence interval
+\[
+\hat \mu \pm z_{\alpha/2} \times \hat\sigma/\sqrt{n}.
+\]
+
+
+
+## T- confidence interval
+
+Today we will:
+
+* Find an exact interval for the mean when the data are normally distributed
+* Compare the intervals we've derived, so far
+* Discuss our assumptions and learn how to assess the assumptions
+
+
+### Unknown variance T-interval
+We need some preliminaries:
+
+* If $Z_i \sim N(0, 1)$ are iid, then (by definition)
+$X = \sum_{i=1}^{(n-1)}Z_i^2$ is [Chi-squared distributed](https://en.wikipedia.org/wiki/Chi-square_distribution) on $(n-1)$ degrees of freedom. Usually denoted $X\sim \chi^2(n-1)$.
+
+* If $Z \sim N(0, 1)$ and $X\sim \chi^2(n-1)$ are independent, then
+\[
+T = \frac{Z}{\sqrt{X/(n-1)}} \sim t(n-1).
+\]
+where $t(n-1)$ denotes the [t-distribution](https://en.wikipedia.org/wiki/Student%27s_t-distribution) on $n-1$ degrees of freedom.
+
+
+
+#### How does this help us and what does it have to do with beer? 
+We already know that,
+\[
+\sqrt{n}(\bar X - \mu)/\sigma \sim N(0,1).
+\]
+It turns out that
+\[
+(n-1)\hat \sigma^2/\sigma^2 \sim \chi^2(n-1),
+\]
+and (surprisingly!) $\hat \sigma^2$ and $\bar X$ are independent! (Which implies that the two random variables above are also independent)
+
+Then the test statistic we've been working with is
+\[
+\sqrt{n}(\hat\mu - \mu)/\hat\sigma = \sqrt{n}(\hat\mu - \mu)/\sigma \times \sqrt{\frac{\sigma^2}{\hat\sigma^2} }
+=_D Z \times \sqrt{\frac{n-1}{X}} =_D T,
+\]
+$Z \sim N(0, 1)$ and $X\sim \chi^2(n-1)$, and $T\sim t(n-1)$
+
+This is the one-sample t-test (or confidence interval).
+
+
+
+#### But what does it have to do with beer!?!?
+
+William Gossett published the t-test when he was working for Guinness and was required to publish under a pseudoname. [Wikipedia has more](https://en.wikipedia.org/wiki/William_Sealy_Gosset).
+
+
+<center>
+![Guinness](figures/guinness_beer.jpg){ width=50% }
+</center>
+
+
+
+
+#### Possible intervals (so far)
+
+Here are our intervals then
+
+\[
+\begin{align*}
+\hat \mu \pm z_{\alpha/2} \times \sigma/\sqrt{n} \\
+\hat \mu \pm z_{\alpha/2} \times \hat\sigma/\sqrt{n} \\
+\hat \mu \pm t_{n-1,\alpha/2} \times \hat\sigma/\sqrt{n}.
+\end{align*}
+\]
+
+
+```{r}
+x = mf$`C3 CSA`
+alpha = 0.01
+
+# get n
+n = length(x)
+# get the mean
+muHat = mean(x)
+# get the sd
+stdev = sqrt(var(x)) # sd(x)
+# get z_alpha/2 and z_(1-alpha/2)
+qnorm(alpha/2)
+zalpha = qnorm(1- alpha/2)
+talpha = qt(1-alpha/2, n-1)
+qt(alpha/2, n-1)
+# construct the interval
+Zinterval = c(muHat - zalpha * stdev /sqrt(n), muHat + zalpha * stdev /sqrt(n) )
+Tinterval = c(muHat - talpha * stdev /sqrt(n), muHat + talpha * stdev /sqrt(n) )
+
+hist(mf$`C3 CSA`, main='C3 CSA', xlab='C3 CSA', freq=F, xlim=c(65,85))
+lines(seq(min(mf$`C3 CSA`), max(mf$`C3 CSA`), length.out=200), dnorm(seq(min(mf$`C3 CSA`), max(mf$`C3 CSA`), length.out=200), mean = mean(mf$`C3 CSA`), sd = sd(mf$`C3 CSA`)))
+abline(v=Zinterval, lty=2)
+abline(v=Tinterval, lty=2, col='red')
+
+# What is the interpretation of this interval
+
+```
+
+
+## Evaluating confidence intervals
+
+* Review assumptions of our three intervals so far.
+* Weaken the assumptions a little bit more.
+* Assess confidence intervals using simulations.
+
+### Checking assumptions 
+
+What assumptions have we made for what reason?
+
+1. 
+2. 
+3. 
+4.
+
+<!-- Independence -->
+<!-- Identical -->
+<!-- Normality -->
+<!-- Finite variance -->
+
+We can relax two of these at the expense of having approximate intervals.
+
+### Checking assumptions: Q-Q plot 
+
+* A Q-Q plot compares the distribution of the observed data (sample quantiles) compared to the theoretical distribution (here a standard normal)
+* Rank the data and normalize
+   + $y_i = (x_{(i)}/ - \bar x)/{\tilde \sigma}$
+   + Plot is `x=qnorm(i/n)`, `y=y_i`.
+   + If data are normal the points will be on the line
+* Check out more details on [Wikipedia](https://en.wikipedia.org/wiki/Q%E2%80%93Q_plot)
+* These data are surprisingly close to a normal distribution!
+
+<center>
+```{r}
+cex=1.5
+par(mgp=c(1.7,.7,0), lwd=1.5, lend=2, cex.lab=0.8*cex, cex.axis=0.8*cex, cex.main=1*cex, mfrow=c(1,1), mar=c(2.8,2.8,1.8,.2), bty='l', oma=c(0,0,2,0))
+qqnorm(scale(mf$`C3 CSA`), main='Normal Q-Q plot')
+abline(a=0, b=1, col='blue')
+```
+</center>
+
+### Review of what we just did so far
+
+1. We identified a parameter of interest (population mean of C3 CSA).
+2. We made some assumptions about the data.
+3. We identified three Frequentist confidence intervals.
+ 
+### Aside: What is the interpretation of these intervals?
+\[
+\P(\hat \mu - z_{\alpha/2} \times \hat\sigma/\sqrt{n} < \mu < \hat \mu + z_{\alpha/2} \times \hat\sigma/\sqrt{n}) \approx 1-\alpha
+\]
+...this interpretation is all of Frequentist statistics.
+
+
+
+#### Relaxing assumptions (normality and identicality)
+ 
+* There's one theorem we mentioned in class last week that can relax both of these assumptions
+
+<!-- Lindeberg-Feller Theorem -->
+ 
+* This suggests that we can basically reduce our assumptions to independence and finite variance (and the extra condition in the theorem).
+
+* Then we can use this interval a lot of the time:
+\[
+\P(\hat \mu - z_{\alpha/2} \times \hat\sigma/\sqrt{n} < \mu < \hat \mu + z_{\alpha/2} \times \hat\sigma/\sqrt{n}) \approx 1-\alpha
+\]
+
+* This depends on 2 approximations:
+  1. Large sample (*asymptotic*) normality of the mean
+  2. "plugging-in" $\hat\sigma$ for the unknown parameter $\sigma$.
+  
+* In practice, it seems that it's always safer to use the T- distribution over the normal distribution for confidence intervals (more on this later)
+
+
+
+
+
+## Evaluating confidence intervals under assumption violations
+
+
+
+Today we will:
+
+
+* Estimate a confidence interval in the C3 cross sectional data
+* Run simulations to assess performance of confidence intervals
+    + You can use this code to run your simulations for homework 3
+* Check how sensitive our confidence intervals are to assumptions
+* Define some confidence intervals for the binomial proportion
+
+### Confidence intervals for the mean in the spinal cord data set
+
+
+```{r, echo=TRUE}
+hist(mf$`C3 CSA`)
+
+t.test(mf$`C3 CSA`)
+
+m = mean(mf$`C3 CSA`)
+n = nrow(mf)
+df = n-1
+stdev = sd(mf$`C3 CSA`)
+m
+df
+# alpha = 0.05
+m + c(-1, 1)*qt(0.975, df = df)*stdev/sqrt(n)
+```
+
+
+
+
+
+
+
+### Two types of confidence intervals
+
+\[
+\begin{align*}
+\hat \mu \pm z_{\alpha/2} \times \sigma/\sqrt{n} \text{ (don't know sigma)} \\
+\hat \mu \pm z_{\alpha/2} \times \hat\sigma/\sqrt{n} \\
+\hat \mu \pm t_{n-1,\alpha/2} \times \hat\sigma/\sqrt{n}.
+\end{align*}
+\]
+
+This interval $\hat \mu \pm t_{n-1,\alpha/2} \times \hat\sigma/\sqrt{n}$ is approximate/exact. What are the assumptions?
+
+1.
+2. 
+3.
+4. 
+
+This interval $\hat \mu \pm z_{\alpha/2} \times \hat\sigma/\sqrt{n}$ is approximate/exact. Assuming you are using the central limit theorem, the assumptions are
+
+1.
+2. 
+
+
+
+
+### Simulation setup
+
+* We run simulations to evaluate the confidence intervals in finite samples.
+* What are the metrics we care about, here?
+  1. **Coverage** -- an $\alpha$ level Frequentist interval should contain the true parameter at least $1-\alpha$ percent of the time.
+  2. **Width** -- a smaller interval (that has the right coverage) is better.
+* How do we setup the simulations?
+  + We have a few variables we can set: $n$, $\mu$, $\sigma^2$, $\alpha$, number of simulations.
+  + Need a way to sample the data $X_i$ given $n$, $\mu$, and $\sigma^2$.
+  + Need a function to construct the CIs given the sample.
+  + Need a function to assess the coverage and width of the confidence intervals.
+  + Need a way to assess violations of normality.
+  + Need to do simulations for some different values of some of the parameters.
+  + Need to create some nice looking plots for the results.
+
+
+
+```{r echo=TRUE}
+mu = 1
+sigma = 1
+ns = (1:10) * 10
+nsim = 5000
+alpha = 0.05
+
+# to simulate the null in the ECT data
+ect = read.csv('../datasets/ect/ect.csv')
+ECT = ect$cgi.i
+mu = mean(ECT)
+sigma = sd(ECT)
+
+simResults = data.frame(n = ns)
+simResults[ , c('Zexact_coverage', 'Zapprox_coverage', 'T_coverage', 'Zexact_width', 'Zapprox_width', 'T_width')] = NA
+
+for(n in ns){
+  CIs = data.frame('mean' = rep(NA, nsim))
+  CIs[, paste(rep(c('Zexact', 'Zapprox', 'T'), each=2), rep(c('lower', 'upper'), 3), sep="_" )] = NA
+  
+  for(sim in 1:nsim){
+    # draw a random sample, normal or skewed
+    X = sample(ECT, n, replace=TRUE) #mu +  (rgamma(n, shape = 1.2, rate = 5) - 1.2/5)/sqrt(1.2)*5 # rnorm(n, sd=sigma) #  # sample(n, fakeECT, replace=TRUE)
+    stdev = sd(X)
+    # construct the Zexact confidence interval
+    CIs$mean[sim] = mean(X)
+    CIs[sim, c('Zexact_lower', 'Zexact_upper') ] = c(mean(X) + c(-1,1)*qnorm(1-alpha/2)*sigma/sqrt(n))
+    # construct two more CIs
+    # Z approximate interval
+    CIs[sim, c('Zapprox_lower', 'Zapprox_upper') ] = c(mean(X) + c(-1,1)*qnorm(1-alpha/2)*stdev/sqrt(n))
+    # T-interval
+    CIs[sim, c('T_lower', 'T_upper') ] = c(mean(X) + c(-1,1)*qt(1-alpha/2, n-1)*stdev/sqrt(n))
+  }
+  CIs$Zexact_gotcha = ifelse(CIs$Zexact_lower<=mu & CIs$Zexact_upper>=mu, 1, 0)
+  CIs$Zapprox_gotcha = ifelse(CIs$Zapprox_lower<=mu & CIs$Zapprox_upper>=mu, 1, 0)
+  CIs$T_gotcha = ifelse(CIs$T_lower<=mu & CIs$T_upper>=mu, 1, 0)
+  # This computing the width of the confidence interval
+  CIs[paste(c('Zexact', 'Zapprox', 'T'), 'width', sep="_")] = CIs[, grep('_upper', names(CIs))] -  CIs[, grep('_lower', names(CIs))] 
+  
+  simResults[which(simResults$n==n), grep('coverage', names(simResults), value = TRUE)] = colMeans(CIs[ , grep('_gotcha', names(CIs), value=TRUE) ] )
+  simResults[which(simResults$n==n), grep('width', names(simResults), value = TRUE)] = colMeans(CIs[ , grep('_width', names(CIs), value=TRUE) ] )
+}
+
+plot(simResults$n, simResults$Zexact_coverage, ylim=c(0.5, 1), type='b', ylab='Coverage (proportion)', xlab='n', main='CI coverage')
+points(simResults$n, simResults$Zapprox_coverage, type='b', col='red')
+points(simResults$n, simResults$T_coverage, type='b', col='blue')
+abline(h=1-alpha, lty=2)
+legend('bottomright', legend=c('Zexact', 'Zapprox', 'T'), col=c('black', 'red', 'blue'), bty='n', lty=2)
+
+plot(simResults$n, simResults$Zexact_width, type='b', ylim=c(0, 2), ylab='CI width', xlab='n', main='CI width')
+points(simResults$n, simResults$Zapprox_width, type='b',  col='red')
+points(simResults$n, simResults$T_width, type='b', col='blue')
+legend('bottomright', legend=c('Zexact', 'Zapprox', 'T'), col=c('black', 'red', 'blue'), bty='n', lty=2)
+
+
+
+# range(c(CIs$lower, CIs$upper))
+
+
+```
+
+* Don't interpret width without having proper coverage.
+* These estimates are noisy, just like the bias/variance simulations. Use more to get better estimates.
+* Rerun these simulations with the gamma errors. With errors from ECT data
+
+## Assumption violations with T-interval
+
+* Another collaborator I have is evaluating the effect of ECT to treat depression and psychosis symptoms.
+* For this study, my collaborator has reported [CGI-I scores](https://simpleandpractical.com/clinical-global-impressions-scale-cgi/)
+* The value 4 represents "no change" and he wants to know whether the population mean is likely to be far from 4.
+* What do we do when the assumptions of the T-test aren't met?
+
+
+```{r}
+hist(ect$cgi.i, xlab='CGI-I', breaks = c(0:8)-0.5)
+qqnorm(scale(ect$cgi.i)); abline(a=0, b=1)
+ect$cgi.i - mean(ect$cgi.i)
+t.test(ect$cgi.i)
+```
+
+
+## Confidence intervals for binomial proportions
+
+
+### CIs using the central limit theorem
+
+Remember the CLT:
+
+**The Central Limit Theorem (Durrett, pg. 124):** Let $X_1, X_2, \ldots$ be iid with $\E X_i = \mu$ and $\text{Var}(X_i) = \sigma^2 \in (0, \infty)$.
+
+If $\bar X_n = n^{-1} \sum_{i=1}^n X_i$, then
+\[
+n^{1/2}(\bar X_n - \mu)/\sigma \to_D X,
+\]
+where $X \sim N(0,1)$.
+
+
+* The CLT allows us to make probabilistic statements about estimators that can be expressed as sums.
+* Since it is an "asymptotic" approximation (infinite sample size), we don't know how it works in finite samples.
+* Most often, we use simulations to evaluate the finite sample approximation.
+* For homework Problem 1a you will derive this interval, just like we do here.
+
+\[
+\mathbb{P}\left(\bar X_n - Z_{0.975}\times \sqrt{p(1-p)/n} < p < \bar X_n + Z_{0.975}\times \sqrt{p(1-p)/n}\right) \approx 0.95.
+\]
+
+**You will work with this interval for homework**
+
+
+
+
+### Clopper-Pearson interval for the binomial proportion
+
+
+* This is an _exact_ interval (sort of), meaning the probability of coverage is not approximate.
+* To me, it's not intuitive why this works as a confidence interval ([Clopper. Pearson](https://academic.oup.com/biomet/article-abstract/26/4/404/291538?redirectedFrom=fulltext)).
+
+Conditional on the value $X_o \sim \text{Binom}(p)$ (treat it as nonrandom), define $p_\ell(X_o)$ as the value that satisfies
+\[
+0.975 = \sum_{k=0}^{X_o-1}{ n \choose k} p_{\ell}^k(1-p_\ell)^{n-k}
+\]
+and $p_u(X_o)$ as the value that satisfies
+\[
+0.025 = \sum_{k=0}^{X_o}{ n \choose k} p_{u}^k(1-p_u)^{n-k}
+\]
+
+### Picture of this interval
+
+Let's say $n=50$, $\sum_i x_i = 30$, then choose $p$ so that
+
+
+```{r}
+n=50
+si = 30
+alpha = 0.05
+x = 0:n
+plower = uniroot(function(p) pbinom(si, n, p) - (1-alpha/2), interval=c(0.1, 0.9))$root
+pupper = uniroot(function(p) pbinom(si, n, p) - alpha/2, interval=c(0.1, 0.9))$root
+yl = dbinom(x, size=n, prob=plower)
+yu = dbinom(x, size=n, prob=pupper)
+
+plot(x, yl, ylab='P(sumXi=x)', xlab='x', type='h', col='red')
+abline(v=si, col='black', lty=2)
+abline(v=plower*n, col='red', lty=2)
+legend('topleft', legend=c('sumXi', 'lower CI', 'upper CI'), lty=2, col=c('black', 'red', 'blue'))
+
+
+plot(x, yu, ylab='P(sumXi=x)', xlab='x', type='h', col='blue')
+abline(v=si, col='black', lty=2)
+abline(v=pupper*n, col='blue', lty=2)
+legend('topleft', legend=c('sumXi', 'lower CI', 'upper CI'), lty=2, col=c('black', 'red', 'blue'))
+
+plot(x, yl, ylab='P(sumXi=x)', xlab='x', type='h', col='red')
+points(x, yu, type='h', col='blue')
+abline(v=si, col='black', lty=2)
+abline(v=plower*n, col='red', lty=2)
+abline(v=pupper*n, col='blue', lty=2)
+```
+
+
+* Picture of the interval.
+
+
+### Beta distribution
+
+The Beta distribution is a two parameter distribution
+\[
+f(y; \alpha, \beta) = \frac{1}{B(\alpha, \beta)}y^{\alpha-1}(1-y)^{\beta-1}.
+\]
+Note its similarity to the binomial distribution
+\[
+p^{\sum_i x_i}(1- p)^{n-\sum_i x_i}
+\]
+
+
+It turns out that this duality implies that the boundaries for the Clopper-Pearson interval can be expressed in terms of quantiles of the beta distribution
+\[
+\left(\text{qbeta}(\alpha/2, X, n-X +1), 
+\text{qbeta}(1-\alpha/2, X+1, n-X) \right)
+\]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## Extra stuff
+
+
+```{r, echo=TRUE, fig.height=5, fig.width=5}
+
+# sample size
+ns = c(5, 10,50,100,200,500)
+# correlation
+rhos = c(0, -0.7)
+
+
+# creating blank output table
+results = expand.grid(rho=rhos , n=ns)
+colNames = paste(rep(c("rhoHat"), each=3), 
+                 rep(c('Bias', 'Variance', 'MSE'), 1))
+results[, colNames ] = NA
+
+
+
+for(simInd in 1:nrow(results)){
+  rho = results[simInd,'rho']
+  n = results[simInd, 'n']
+ 
+  # generate data
+  Sigma = matrix(c(1, rho, rho, 1), nrow=2)
+  sqrtSigma = svd(Sigma)
+  sqrtSigma = sqrtSigma$u %*% diag(sqrt(sqrtSigma$d))
+  # each column is a draw of x and y
+  
+  rhoHats = replicate(n = 10000,  cor(tcrossprod(matrix(rnorm(n*2),
+            ncol=2), sqrtSigma)))
+ 
+ # compute bias, variance, MSE of estimators
+ results[simInd, c('rhoHat Bias', 'rhoHat Variance')]=
+   c(mean(rhoHats[1,2,])-rho , var(rhoHats[1,2,]))
+}
+ 
+subres = results[results$rho== -0.7, ]
+subres2 = results[results$rho== 0,]
+
+
+plot(subres$n, subres$`rhoHat Bias`, xlab='Sample size', ylab='Bias',
+     main='Bias of rhoHat when rho = -0.7', type='b')
+plot(subres2$n, subres2$`rhoHat Bias`, xlab='Sample size', ylab='Bias',
+     main='Bias of rhoHat when rho = 0', type='b')
+
+
+```
+
+
