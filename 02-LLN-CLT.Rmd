@@ -434,6 +434,21 @@ plot(ns, probDiffs, xlab='Sample size', ylab='Distribution error', main='CLT for
 abline(h=0, lty=2)
 ```
 
+
+```{r}
+ns = 1:5000
+p = 0.01
+z = 1.64
+
+probDiffs = rep(NA, length(ns))
+for(n in ns){
+  probDiffs[n] = abs( pbinom(sqrt(n*p*(1-p))*z + n*p, size = n, prob=p) - pnorm(z)   )
+}
+plot(ns, probDiffs, xlab='Sample size', ylab='Distribution error', main='CLT for Bernoulli', type='l')
+abline(h=0, lty=2)
+```
+
+
 ### QQ-plot!
 
 
@@ -512,12 +527,6 @@ Comments:
 * LLN is about the convergence of the mean estimator to a constant.
 * CLT is about the convergence of the mean estimator times $\sqrt{n}$ to a normal distribution.
 * CLT is used a lot in statistics to make approximate probability statements.
-
-
-
-* Questions on upcoming homework?
-* 
-* Lab will be the one for module 2 if we have time. If not, you can use it to practice concepts on your own.
 
 
 

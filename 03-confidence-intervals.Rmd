@@ -263,8 +263,8 @@ abline(h=mu, lty=2 )
 * We need an estimate of $\sigma^2$ from the data. Two are common
 \[
 \begin{align*}
-\tilde \sigma^2 & = n^{-1} \sum_{i=1}^n X_i \text{ (maximum likelihood estimator)}\\
-\hat \sigma^2 & = (n-1)^{-1} \sum_{i=1}^n X_i \text{ (unbiased estimator)}\\
+\tilde \sigma^2 & = n^{-1} \sum_{i=1}^n (X_i - \bar X)^2 \text{ (maximum likelihood estimator)}\\
+\hat \sigma^2 & = (n-1)^{-1} \sum_{i=1}^n (X_i - \bar X)^2 \text{ (unbiased estimator)}\\
 \end{align*}
 \]
 * We'll focus on the second estimator.
@@ -275,7 +275,7 @@ abline(h=mu, lty=2 )
 ### Unknown variance approximate interval
 
 
-* What is the distribution of $\sqrt{n}(\hat\mu - \mu)/\tilde\sigma$?
+* What is the distribution of $\sqrt{n}(\hat\mu - \mu)/\hat\sigma$?
 * If we don't know the distribution, then there is theoretical justification (using Slutsky's theorem) to say
 \[
 \sqrt{n}(\hat\mu - \mu)/\hat\sigma \sim N(0,1) \text{ (approximately)}

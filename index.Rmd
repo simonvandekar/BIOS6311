@@ -57,9 +57,11 @@ library(tidyverse)
 library(RESI)
 ```
 
+
 # Course information {-}
 
 This document includes all the course notes for Vanderbilt Biostatistics BIOS6311 *Principles of Modern Biostatistics*.
+## MIDTERM NOVEMBER 9TH 2023! {-}
 
 ## Syllabus {-}
 
