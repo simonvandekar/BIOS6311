@@ -63,6 +63,15 @@ library(RESI)
 This document includes all the course notes for Vanderbilt Biostatistics BIOS6311 *Principles of Modern Biostatistics*.
 ## MIDTERM NOVEMBER 9TH 2023! {-}
 
+
+From that Rice book above here are some good practice problems:
+
+**Section 4.7:** 2, 16, 44, 47, 50, 54, 68 (not really that helpful)
+
+**Section 5.4:** 11 (might be helpful), 17 (the equality should be approximate equality),
+
+**Section 7.7:** 3, 8, 10, 16, 17, 18, 21
+
 ## Syllabus {-}
 
 This document includes all the course notes for Vanderbilt Biostatistics BIOS6311 *Principles of Modern Biostatistics*.
