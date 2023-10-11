@@ -61,7 +61,9 @@ library(RESI)
 # Course information {-}
 
 This document includes all the course notes for Vanderbilt Biostatistics BIOS6311 *Principles of Modern Biostatistics*.
-## MIDTERM NOVEMBER 9TH 2023! {-}
+
+
+## MIDTERM NOVEMBER 9TH 2023 {-}
 
 
 From that Rice book above here are some good practice problems:
@@ -73,8 +75,6 @@ From that Rice book above here are some good practice problems:
 **Section 7.7:** 3, 8, 10, 16, 17, 18, 21
 
 ## Syllabus {-}
-
-This document includes all the course notes for Vanderbilt Biostatistics BIOS6311 *Principles of Modern Biostatistics*.
 
 **Schedule:** Tuesdays/Thursdays 10:30am-12pm (in-person)\
 **Lab:** Tuesdays 4pm-5pm (in-person)\
