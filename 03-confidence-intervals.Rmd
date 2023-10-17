@@ -334,6 +334,21 @@ This is the one-sample t-test (or confidence interval).
 
 
 
+#### T-distribution shape
+
+```{r}
+# plotting T distribution
+t = seq(-4, 4, length.out = 1000)
+ns = c(5, 10, 15, 20, 25)
+n = ns[1]
+plot(t, dnorm(t), ylab='density', type = 'l', ylim = c(0, 0.6))
+for(n in ns){
+  lines(t, dt(t, n-1), ylab='density', col=which(ns %in% n)+1)
+}
+legend('topright', legend=ns, fill=1:5+1)
+```
+
+
 #### But what does it have to do with beer!?!?
 
 William Gossett published the t-test when he was working for Guinness and was required to publish under a pseudoname. [Wikipedia has more](https://en.wikipedia.org/wiki/William_Sealy_Gosset).
@@ -352,8 +367,8 @@ Here are our intervals then
 
 \[
 \begin{align*}
-\hat \mu \pm z_{\alpha/2} \times \sigma/\sqrt{n} \\
-\hat \mu \pm z_{\alpha/2} \times \hat\sigma/\sqrt{n} \\
+\hat \mu \pm z_{1-\alpha/2} \times \sigma/\sqrt{n} \\
+\hat \mu \pm z_{1-\alpha/2} \times \hat\sigma/\sqrt{n} \\
 \hat \mu \pm t_{n-1,\alpha/2} \times \hat\sigma/\sqrt{n}.
 \end{align*}
 \]
@@ -361,7 +376,7 @@ Here are our intervals then
 
 ```{r}
 x = mf$`C3 CSA`
-alpha = 0.01
+alpha = 0.05
 
 # get n
 n = length(x)
@@ -401,7 +416,7 @@ What assumptions have we made for what reason?
 1. 
 2. 
 3. 
-4.
+4. (One is kind of silly)
 
 <!-- Independence -->
 <!-- Identical -->
@@ -437,7 +452,7 @@ abline(a=0, b=1, col='blue')
  
 ### Aside: What is the interpretation of these intervals?
 \[
-\P(\hat \mu - z_{\alpha/2} \times \hat\sigma/\sqrt{n} < \mu < \hat \mu + z_{\alpha/2} \times \hat\sigma/\sqrt{n}) \approx 1-\alpha
+\P(\hat \mu - z_{1-\alpha/2} \times \hat\sigma/\sqrt{n} < \mu < \hat \mu + z_{1-\alpha/2} \times \hat\sigma/\sqrt{n}) \approx 1-\alpha
 \]
 ...this interpretation is all of Frequentist statistics.
 
@@ -453,7 +468,7 @@ abline(a=0, b=1, col='blue')
 
 * Then we can use this interval a lot of the time:
 \[
-\P(\hat \mu - z_{\alpha/2} \times \hat\sigma/\sqrt{n} < \mu < \hat \mu + z_{\alpha/2} \times \hat\sigma/\sqrt{n}) \approx 1-\alpha
+\P(\hat \mu - z_{1-\alpha/2} \times \hat\sigma/\sqrt{n} < \mu < \hat \mu + z_{1-\alpha/2} \times \hat\sigma/\sqrt{n}) \approx 1-\alpha
 \]
 
 * This depends on 2 approximations:
@@ -553,10 +568,10 @@ nsim = 5000
 alpha = 0.05
 
 # to simulate the null in the ECT data
-ect = read.csv('../datasets/ect/ect.csv')
-ECT = ect$cgi.i
-mu = mean(ECT)
-sigma = sd(ECT)
+# ect = read.csv('../datasets/ect/ect.csv')
+# ECT = ect$cgi.i
+mu = 3
+sigma = 1
 
 simResults = data.frame(n = ns)
 simResults[ , c('Zexact_coverage', 'Zapprox_coverage', 'T_coverage', 'Zexact_width', 'Zapprox_width', 'T_width')] = NA
@@ -567,7 +582,7 @@ for(n in ns){
   
   for(sim in 1:nsim){
     # draw a random sample, normal or skewed
-    X = sample(ECT, n, replace=TRUE) #mu +  (rgamma(n, shape = 1.2, rate = 5) - 1.2/5)/sqrt(1.2)*5 # rnorm(n, sd=sigma) #  # sample(n, fakeECT, replace=TRUE)
+    X = rnorm(n, sd=sigma)# mu +  (rgamma(n, shape = 1.2, rate = 5) - 1.2/5)/sqrt(1.2)*5 # rnorm(n, sd=sigma) #  # sample(n, fakeECT, replace=TRUE)
     stdev = sd(X)
     # construct the Zexact confidence interval
     CIs$mean[sim] = mean(X)
