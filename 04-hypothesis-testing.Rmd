@@ -1,0 +1,842 @@
+
+# Hypothesis testing
+
+## Recap
+
+### hat is the interpretation of confidence intervals?
+\[
+\P(\hat \mu - z_{\alpha/2} \times \hat\sigma/\sqrt{n} < \mu < \hat \mu + z_{\alpha/2} \times \hat\sigma/\sqrt{n}) \approx 1-\alpha
+\]
+...this interpretation is all of Frequentist statistics.
+
+
+### What do I tell Seth?
+
+```{r}
+load('../datasets/smith_cervical_sc/tpmf.rdata')
+ttest = t.test(mf$`C3 CSA`)
+ttest
+```
+
+The mean C3 cross-sectional area was `r round(ttest$estimate, 2)` with a 95\% confidence interval (`r round(ttest$conf.int[1], 2)`, `r round(ttest$conf.int[2], 2)`).
+
+<!-- ## Simulation concepts -->
+
+<!-- * Simulations are an attempt to explore what the world is like under several different scenarios -->
+<!-- * In class we've done this by -->
+<!--     1. Defining what parameter we want to estimate -- is not necessarily a distribution parameter. -->
+<!--     2. Defining the estimators we want to assess and a metric to assess them by. -->
+<!--     3. Defining the sampling distribution (e.g. Poisson, log normal, bernoulli), distribution parameters [e.g. `lambda`, (`mu`, `sigmaSq`), `p`], other parameters (`n`, `alpha`, `nsim`, etc.) -->
+<!--     4. Choosing the range of parameter values. These represent different potential states of the world. -->
+<!--     5. Looping through all of the possible combinations of parameter values. -->
+<!--     6. "Looping" (we did this without a loop in our code) through replications of the world. In each replication we compute the estimator. -->
+<!--     7. After we have `nsim` estimators, we use it to compute our metrics (e.g. coverage, width, bias, MSE). -->
+<!--     8. Save the output of this potential state of the world and move on to the next one. -->
+
+
+
+## Single mean example using the Alzheimer's disease neuroimaging intiative (ADNI)
+
+
+### The ADNI data
+
+
+* Cognitive impairment in the ADNI data set it classified into 3 broad categories
+    1. Healthy controls (HC)
+    2. Mild cognitive impairment (MCI)
+    3. Alzheimer's disease (AD)
+* Cognitive decline (in general and in AD) is characterized most strongly by changes to the hippocampus
+* Hippocampus is the part of the brain associated with memory formation (and other memory processes).
+* Memory decline in AD is related to deterioration of the hippocampus
+
+![](figures/hipp.jpeg){ width=50% }
+
+```{r, fig.width=10, fig.height=5}
+set.seed(12345)
+hipp = readRDS('../datasets/adni/hippocampus.rds')
+hipp = hipp[!duplicated(hipp$RID),]
+layout(matrix(1:2, ncol=2))
+hist(hipp$LEFTHIPPO, main='Left hippocampus', xlab='Volume (mm)')
+hist(hipp$RIGHTHIPPO, main='Right hippocampus', xlab='Volume (mm)')
+```
+
+
+We're going to use the ADNI data to study some features of the hippocampus in healthy people and also compare to people with mild cognitive impairment.
+
+These are the research questions
+
+* "In healthy subjects, is there a difference in the size of the left and right hippocampi?"
+* "Is there a difference in the size of the left/right hippocampus between HC and those with MCI?"
+
+
+What is the difference between these hypotheses?
+
+### Single mean/Paired t-test example
+
+* We've already constructed some CIs for a single continuous mean.
+* A single mean t-test is the testing analog of a single mean CI.
+* A "paired" t-test is an example of a single mean hypothesis test.
+* Hypothesis testing is convenient for research questions like "Are $A$ and $B$ different?" And not for questions like "What is the difference between $A$ and $B$?"
+
+
+
+
+
+```{r, fig.width=10, fig.height=5}
+# subsample data to make it more interesting
+n = 200
+hip = hipp[sample(nrow(hipp), n),]
+layout(matrix(1:2, ncol=2))
+hist(hip$LEFTHIPPO, main='Left hippocampus', xlab='Volume (mm)')
+hist(hip$RIGHTHIPPO, main='Right hippocampus', xlab='Volume (mm)')
+
+```
+
+### Paired data setup
+
+* If $L_i \sim N(\mu_0, \sigma^2_0)$ and $R_i \sim N(\mu_1, \sigma^2_1)$, then $X_i = L_i - R_i \sim N(\delta, \sigma^2)$ where $\delta=\mu_0 - \mu_1$.
+* For the paired t-test $\text{Cov}(L_i, R_i) \ne 0$, and contributes to $\sigma^2$.
+
+
+```{r, fig.width=10, fig.height=5}
+hist(hip$LEFTHIPPO-hip$RIGHTHIPPO, main='Left-Right hippocampus', xlab='Volume (mm)')
+plot(hip$LEFTHIPPO, hip$RIGHTHIPPO, xlab='Left Hipp Vol', ylab='Right Hipp Vol')
+```
+
+
+
+
+## Hypothesis testing philosophy
+
+1. State the hypothesis.
+2. Set probability threshold for a decision.
+3. Compute the test statistic and the p-value.
+4. Retain or reject the null.
+
+
+
+
+### Null hypothesis
+
+* Hypothesis testing compares two hypotheses, quantified by restricting the range of a parameter.
+* The *Null hypothesis* is the uninteresting hypothesis, usually, this is what people are trying to show is likely to be wrong.
+* It can be described generally in terms of a parameter
+\[
+H_0: \delta \in \Delta_0 \subset \R,
+\]
+where $\Delta_0$ is a "closed" subset of $\R$.
+* In most cases $\Delta_0$ is chosen as a single point (zero); this is often called a **two tailed test**. For the difference in left and right hippocampal volume
+\[
+H_0: \delta := \mu_0 - \mu_1 = 0.
+\]
+* Another option of the null for our given research question is that the left hippocampus is smaller than the right (called a **one tailed test**)
+\[
+H_0: \delta \ge 0.
+\]
+
+
+
+
+
+
+### Alternative hypotheses
+
+* The alternative hypothesis can be defined as a particular point, called a *simple hypothesis*
+\[
+H_a: \delta = \delta_a \notin \Delta_0
+\]
+* Most often though, the alternative hypothesis is defined as the compliment to $\Delta_0$, called a *composite hypothesis*.
+* For the null $H_0: \delta=0$
+\[
+H_a: \delta \ne 0.
+\]
+* For the null $H_0: \delta \ge 0$
+\[
+H_A: \delta < 0.
+\]
+
+
+
+
+
+
+
+
+
+### Hypothesis testing philosophy recap
+
+1. State the hypothesis.
+2. Set probability threshold for a decision.
+3. Compute the test statistic and the p-value.
+4. Retain or reject the null.
+
+
+### Restating the ADNI paired test hypothesis
+
+* "In healthy subjects, is there a difference in the size of the left and right hippocampi?"
+* $X_i = L_i - R_i$
+
+### Hypothesis test probabilities
+
+* The Frequentist framework uses dataset-to-dataset probabilities to make a decision about the hypothesis
+* The interpretation is similar to how we constructed confidence intervals.
+
+
+#### Test statistic version of hypothesis testing
+
+* We rely on the fact that $T = \sqrt{n}(\hat\delta - \delta_0)/\hat \sigma \sim t(n-1)$ if $\delta_0$ is the true value of the parameter.
+    + Where $\hat \delta = \bar X$ and $\hat \sigma^2 = (n-1)^{-1} \sum_{i=1}^n (X_i - \bar X)^2$.
+    + $T$ is called the **test statistic**.
+    
+* In this Frequentist approach, an $\alpha$ level test of $H_0$ chooses a threshold $t_{1-\alpha/2,(n-1)}$ such that $\P(\lvert T \rvert  > t_{1-\alpha/2,(n-1)} | H_0) \le \alpha$.
+* In words, $\alpha$ is the probability that we observed a statistic larger than $t_{1-\alpha/2,(n-1)}$ under the null.
+* We "reject" the null hypothesis if our observed test statistics $\lvert T_{obs} \rvert>t_{1-\alpha/2,(n-1)}$.
+* I.e. of the standardized difference between left and right hippocampus is far away from zero in our observed data, that implies that it is probably far away from zero in the population.
+
+
+  
+
+### Example: performing the test in the ADNI hippocampus data
+
+* To do this in practice, we specify the null hypothesis, choose the alpha level, and compute the test statistic
+
+```{r, echo=TRUE}
+X = hip$LEFTHIPPO - hip$RIGHTHIPPO
+delta0 = 0
+deltaHat = mean(X)
+sigmaHat = sd(X)
+n = nrow(hip)
+
+# Rejection threshold for t-distributed statistic such the probability it is beyond this value is equal to alpha=0.05
+alpha = 0.05
+qt(0.025, df=n-1)
+qt(0.975, df=n-1)
+
+# test statistic in observed data
+deltaHat
+sigmaHat
+deltaHat/sigmaHat*sqrt(n)
+
+```
+
+
+
+### p-value version of testing
+
+* To do hypothesis testing with a p-value we plug in the observed test statistic into our probability statement
+
+\[
+p = \P(\lvert T \rvert \ge \lvert T_{obs} \rvert ) \le \P(\lvert T \rvert  > t_{1-\alpha/2,(n-1)} | H_0) \le \alpha
+\]
+
+* In words, the p-value is the probability we get a statistic at least as large as the one we observed if the null hypothesis is true.
+
+
+
+```{r, echo=TRUE}
+X = hip$LEFTHIPPO - hip$RIGHTHIPPO
+delta0 = 0
+deltaHat = mean(X)
+sigmaHat = sd(X)
+n = nrow(hip)
+
+# test statistic in observed data
+deltaHat
+sigmaHat
+deltaHat/sigmaHat*sqrt(n)
+
+2 * pt(-abs(deltaHat/sigmaHat*sqrt(n)), n-1)
+```
+
+## Retaining or rejecting the null
+
+* The decision to retain or reject is based on the probability of observing a result as or more extreme than we do in our observed data if the null hypothesis were true.
+* the $\alpha$ decides how strict we want to be about rejecting our hypothesis.
+* What happens if we decrease $\alpha$?
+
+
+
+### Type 1 and type 2 errors
+
+* After making a decision, there are 4 possible outcomes that can occur
+
+|       | Retain $H_0$ | Reject $H_0$|
+| :------------- | :----------: | -----------: |
+|  $H_0$ True | True negative $\P(\lvert T \rvert< t_{1-\alpha/2,(n-1)} | H_0)$    | Type 1 error $\P(\lvert T \rvert \ge t_{1-\alpha/2,(n-1)} | H_0)$   |
+| $H_0$ False   | Type 2 error $\P(\lvert T \rvert< t_{1-\alpha/2,(n-1)} | H_a)$ | Power  $\P(\lvert T \rvert\ge t_{1-\alpha/2,(n-1)} | H_a)$ |
+
+
+### Using the `t.test` function
+```{r, echo=TRUE}
+
+t.test( hip$LEFTHIPPO - hip$RIGHTHIPPO, alternative = 'two.sided')
+t.test(hip$LEFTHIPPO, hip$RIGHTHIPPO, paired = TRUE, alternative = 'two.sided')
+```
+
+
+
+## What is the probability of observing a result this extreme under $H_0: \delta=0$?
+
+\[
+\P(\vert T\rvert > -1.501723 \mid H_0) = 2\times \Phi(-1.501723)
+\]
+This is the $p$-value. It is conditional on our dataset. Across datasets it is random.
+
+
+## Parallel between CIs and hypothesis testing
+
+* The hypothesis test for a given $\alpha$ is related to the confidence interval.
+* In words, if an $\alpha$ level confidence interval contains a given value, then your data do not have enough evidence to reject that value with an $\alpha$ level test.
+* If you reject a value $\delta_0$ with an $\alpha$ level test, then the $\alpha$ level confidence interval does not contain that value.
+
+\[
+\begin{align*}
+1-\alpha & \le 1-\P(\lvert T \rvert\ge t_{1-\alpha/2,(n-1)} \mid H_0: \delta=\delta_0)\\
+& = \P(\vert T\rvert < t_{1-\alpha/2,(n-1)} \mid H_0: \delta=\delta_0) \\
+& = \P(-t_{1-\alpha/2,(n-1)} < T < t_{1-\alpha/2,(n-1)} \mid H_0: \delta=\delta_0) \\
+& = \P(\hat\delta- t_{1-\alpha/2,(n-1)} \times \hat\sigma/\sqrt{n} < \delta_0 <\hat\delta+ t_{1-\alpha/2,(n-1)}\times \hat\sigma/\sqrt{n} \mid H_0: \delta=\delta_0)
+\end{align*}
+\]
+
+
+
+## Two-tailed hypotheses
+
+* We were using the absolute value because our hypothesis was just that the left and right hippocampus were different.
+* We can also do a one-tailed hypothesis test
+
+
+## One-tailed test in the ADNI data
+
+```{r, echo=TRUE}
+X = hip$LEFTHIPPO - hip$RIGHTHIPPO
+delta0 = 0
+deltaHat = mean(X)
+sigmaHat = sd(X)
+n = nrow(hip)
+
+# Rejection threshold for t-distributed statistic such the probability it is beyond this value is equal to alpha=0.05
+alpha = 0.05
+qt(0.05, df=n-1)
+
+# test statistic in observed data
+deltaHat
+sigmaHat
+deltaHat/sigmaHat*sqrt(n)
+
+# compute p-value
+pt(deltaHat/sigmaHat*sqrt(n), df=n-1)
+
+t.test( hip$LEFTHIPPO, hip$RIGHTHIPPO, paired = TRUE, alternative = 'less')
+```
+
+<!-- ## Defining a two tailed threshold that we talked about -->
+
+<!-- * T-distribution -->
+<!-- * Normal distribution -->
+
+<!-- We've already shown that, approximately -->
+<!-- \[ -->
+<!-- \frac{(\hat \delta - \delta)}{\hat\sigma/\sqrt{n}} \sim N(0, 1) -->
+<!-- \] -->
+<!-- Or with our assumptions about normality -->
+<!-- \[ -->
+<!-- \frac{(\hat \delta - \delta)}{\hat\sigma/\sqrt{n}} \sim t(n-1) -->
+<!-- \] -->
+
+<!-- * If $H_0: \delta = 0$ is true that implies that -->
+
+<!-- \[ -->
+<!-- \frac{\hat \delta}{\hat\sigma/\sqrt{n}} \sim t(n-1), -->
+<!-- \] -->
+<!-- which would mean that -->
+<!-- \[ -->
+<!-- \P\left(\Big\lvert\frac{\hat \delta}{\hat\sigma/\sqrt{n}} \Big\rvert > t_{1-\alpha/2, (n-1)}\right ) = \alpha. -->
+<!-- \] -->
+
+<!-- If in our observed data $\Big\lvert\frac{\hat \delta_{\text{obs}}}{\hat\sigma_{\text{obs}}/\sqrt{n}} \Big\rvert> t_{1-\alpha/2, (n-1)}$ -->
+<!-- , then that is not likely to happen under the null very often, so if it does happen then that is evidence against the null being true. -->
+
+
+
+
+<!-- ## My hypothesis was not that $\delta=0$ -->
+
+<!-- * Wanted to test that people smoked more than they drank -->
+<!-- * i.e. I wanted to prove that $H_1: \delta<0$ against a null $H_0: \delta\ge 0$. -->
+<!-- * So -->
+<!-- \[ -->
+<!-- \P\left(\frac{\hat \delta - \delta}{\hat\sigma/\sqrt{n}} < t_{1-\alpha/2, (n-1)} \mid H_0: \delta\ge 0 \right) -->
+<!-- \] -->
+<!-- * Picture to explain this, $\hat \delta_{obs}$ somewhere less than zero, $\delta$ above zero, t-distribution around $\delta$ overlapping $\hat \delta_{obs}$. Whenever $\hat \delta> \delta \in \Delta_0$, then it doesn't matter, that occurrence is not evidence against the null. -->
+
+
+
+## Practice questions
+
+Review with questions:
+
+
+
+
+|       | Retain $H_0$ | Reject $H_0$|
+| :------------- | :----------: | -----------: |
+|  $H_0$ True | True Negative $\P(\lvert T \rvert< t_{1-\alpha/2,(n-1)} | H_0)$    |1. _____ $\P(\lvert T \rvert \ge t_{1-\alpha/2,(n-1)} | H_0)$   |
+| $H_0$ False   | 2. _____ $\P(\lvert T \rvert< t_{1-\alpha/2,(n-1)} | H_a)$ | 3. _____  $\P(\lvert T \rvert\ge t_{1-\alpha/2,(n-1)} | H_a)$ |
+
+
+* How to compute a test statistic for $H_0: \mu = 2100$?
+\[
+\frac{(4. \underline{\hspace{2em}} - 5. \underline{\hspace{2em}})}{6.\underline{\hspace{2em}} / 7.\underline{\hspace{2em}}}
+\]
+
+* 8. How to compute a two-tailed p-value?
+
+
+```{r, echo=FALSE, eval=FALSE}
+set.seed(1112)
+students = read.csv('../unshared/students2023.csv')$First.Name
+sample(students)
+cbind(1:9, students[sample(length(students))][1:9])
+```
+
+## Example HCP dataset
+
+* In the human connectome project participants perform an emotion recognition task
+* We might be interested in comparing whether people are as accurate with identifying fearful faces as they are identifying angry faces
+
+
+
+```{r}
+hcp = read.csv('../datasets/hcp/hcp.csv')
+hist(hcp$ER40ANG - hcp$ER40FEAR, main='Anger-Fear')
+qqnorm(scale(hcp$ER40ANG - hcp$ER40FEAR)); abline(a=0, b=1, col='orange')
+# two-tailed
+t.test(hcp$ER40ANG, hcp$ER40FEAR, paired = TRUE)
+# one-tail
+t.test(hcp$ER40ANG, hcp$ER40FEAR, paired = TRUE, alternative='less')
+```
+
+
+
+### One-tailed hypotheses
+
+* We can define one tailed hypotheses if we believe the result should be in a particular direction.
+* E.g. if my null hypothesis is that the Anger emotion identification is at least as accurate as fearful.
+\[
+H_0: \E A_i - \E F_i = \delta \ge 0
+\]
+* Because there is not a single value for $\delta_0$, we choose a value that is most conservative
+* This usually occurs at the boundary of the null set, in this case $\delta_0 = 0$.
+* So the test statistic is (same as before).
+\[
+T = \frac{\hat \delta}{ \hat \sigma/\sqrt{n}}
+\]
+* For our test, only smaller values of the test statistic are evidence against the null (values larger than zero imply $\hat\delta>0$, which is in the null set.
+* So we choose the rejection threshold $t_{\alpha,(n-1)}$, so that
+\[
+\P(T<t_{\alpha,(n-1)}) = \alpha
+\]
+* When our observed test statistics $T_{obs}<t_{\alpha,(n-1)}$ we reject the null
+* Alternatively, we can compute the p-value
+\[
+p = \P(T<T_{obs})
+\]
+and reject when $p<\alpha$
+
+
+
+
+
+
+## The Z-test for hypothesis testing
+
+* If the underlying data are not normally distributed, then we use the CLT approximation
+\[
+\frac{\bar X_n - \delta_0}{\hat\sigma/\sqrt{n}} \approx_D Z \sim N(0,1)
+\]
+* Using the Lindeberg-Feller Theorem also allows us to relax the identicality assumption.
+* We can then do all the same stuff we did with hypothesis testing for the single mean.
+* A natural question is, which of the two tests performs better? We can use simulations to answer this question.
+
+
+## Simulation setup for hypothesis testing
+
+What are the metrics we care about, here?
+
+* Type 1 error rate $\P(\vert T \rvert > t_{1-\alpha/2,(n-1)} )$. By design it should be $\alpha=0.05$.
+    + Another way to check type 1 error rate is using the p-value.
+     \begin{align*}
+     \alpha = \P\{\vert T \rvert > t_{1-\alpha/2,(n-1)} \} & = \P(2\times pt(\vert T \rvert, n-1) > 2 \times pt(t_{1-\alpha/2,(n-1)} )\}\\
+     & = \P(p < \alpha)
+     \end{align*}
+* What does this probability mean? It is about dataset-to-dataset variability.
+* A Z-test is the same thing with the Z-distribution as the reference distribution.
+* Power is another metric we care about -- we have to pick the alternative.
+* How to simulate non-normality? Synthetically sampling data from the gamma distribution.
+* What are the parameters? `n`, `alpha`, `nsim`, the density function I will use for sampling (gamma distribution)
+
+
+
+|       | Retain $H_0$ | Reject $H_0$|
+| :------------- | :----------: | -----------: |
+|  $H_0$ True | True negative $\P(\lvert T \rvert< t_{1-\alpha/2,(n-1)} | H_0)$    | Type 1 error $\P(\lvert T \rvert \ge t_{1-\alpha/2,(n-1)} | H_0)$   |
+| $H_0$ False   | Type 2 error $\P(\lvert T \rvert< t_{1-\alpha/2,(n-1)} | H_a)$ | Power  $\P(\lvert T \rvert\ge t_{1-\alpha/2,(n-1)} | H_a)$ |
+
+<!-- ## Bootstrapping to simulate data -->
+
+<!-- * Bootstrapping is the process of using the observed data set as a sampling distribution. -->
+<!-- * Consider the distribution of the difference between reported alcohol use and cigarette use -->
+
+<!-- ```{r, echo=TRUE, fig.width=8, fig.height=5} -->
+<!-- # number simulation -->
+<!-- nsim = 100000 -->
+<!-- # sample sizes -->
+<!-- ns = c(5, 10, 25, 50, 100, 250) -->
+<!-- # alphas -->
+<!-- alphas = c(0.005, 0.01, 0.05, 0.1) -->
+<!-- # values of lambda to consider -->
+<!-- puf = readRDS('../..//datasets/nsduh/puf.rds') -->
+<!-- nfull = nrow(puf) -->
+<!-- par(mar=c(5,2.8,1.8,.5), oma=c(0,0,2,0)) -->
+<!-- squash::hist2(puf$iralcfm, puf$ircigfm, xlab='Alcohol Use', ylab='Cigarette Use', nx=31, base=10) -->
+<!-- # rounding because the data were imputed by the NSDUH and I wanted whole numbers to make it easier to explain -->
+<!-- diffs = round(puf$iralcfm-puf$ircigfm) -->
+<!-- hist(diffs, xlab='alcohol - cigarettes', main='Hist of diff', probability=TRUE, breaks=seq(-30.5, 30.5, length.out=62)) -->
+<!-- tab = table(diffs) -->
+<!-- tab = tab/sum(tab) -->
+<!-- knitr::kable(tab, digits = 3) -->
+<!-- ``` -->
+
+<!-- * Let's call this distribution $\text{PUF}$. It has 61 parameters that are the probabilities of having a value -30 through 30. -->
+
+### Research question for the simulations: Are t-test and z-test affected by data that have a nonnormal distribution?
+
+* $X_i \sim  Gamma(\alpha,\beta)$ (iid).
+* T-test assumes $X_i\sim N(\mu, \sigma^2)$ (violated).
+* Z-test is approximation, no assumption on distribution of $X_i$.
+* Which performs better?
+
+
+```{r, eval=TRUE, echo=TRUE, cache=TRUE}
+set.seed(12345)
+
+# creating blank output table
+mu = 0
+ns = seq(10, 100, length.out=10)
+alphas = c(0.01, 0.05, 0.1)
+nsim = 1000
+results = expand.grid( n=ns, alpha=alphas)
+colNames = c('t-test type 1 error', 'z-test type 1 error')
+results[, colNames ] = NA
+
+
+
+### Loop through parameter settings and run simulations
+# (Potential states of the world)
+# loop through "n" only instead
+for(n in ns){
+   # draw one sample of size n from our random variable nsim times
+   settingResults = matrix(NA, ncol=2, nrow=nsim)
+   for(sim in 1:nsim){
+     # generate the sample
+     simulatedData = mu + (rgamma(n, shape = 1.2, rate = 5) - 1.2/5)/sqrt(1.2)*5
+     
+     tResult = t.test(simulatedData)
+     # p-value for the t-test
+     settingResults[sim, 1] = tResult$p.value
+    # p-value for the Z-test
+     settingResults[sim, 2] = 2*pnorm(abs(tResult$statistic), lower.tail = FALSE)
+   }
+   # compute type 1 error rate across the simulations
+   results[results$n==n, c('t-test type 1 error', 'z-test type 1 error')] = t(sapply(results[ results$n==n,'alpha'], function(a) colMeans(settingResults<a, na.rm=TRUE)))
+}
+     
+   
+```
+
+
+
+
+
+
+```{r}
+# plotting simulation results
+cols = gray.colors(length(ns))
+
+# T-test
+plot(results$alpha, results$`z-test type 1 error`, type='n', xlab='Target type 1 error', ylab='Observed type 1 error', main='T-test')
+trash = by(results, results$n, function(df) points(df$alpha, df$`t-test type 1 error`, type='b', col=cols[which(ns %in% df$n)]))
+abline(a=0,b=1)
+legend('topleft', fill=cols, legend=ns, bty='n')
+
+# Z-test
+plot(results$alpha, results$`z-test type 1 error`, type='n', xlab='Target type 1 error', ylab='Observed type 1 error', main='Z-test')
+trash = by(results, results$n, function(df) points(df$alpha, df$`z-test type 1 error`, type='b', col=cols[which(ns %in% df$n)]))
+abline(a=0,b=1)
+legend('topleft', fill=cols, legend=ns, bty='n')
+
+
+# Both
+results = results[results$n %in% c(10, 50, 100),]
+plot(results$alpha, results$`z-test type 1 error`, type='n', xlab='Target type 1 error', ylab='Observed type 1 error', main='Both')
+trash = by(results, results$n, function(df) points(df$alpha, df$`t-test type 1 error`, type='b', col=cols[which(ns %in% df$n)]))
+trash = by(results, results$n, function(df) points(df$alpha, df$`z-test type 1 error`, type='b', col=cols[which(ns %in% df$n)], lty=2))
+abline(a=0,b=1)
+legend('topleft', fill=cols, legend=unique(results$n), bty='n')
+```
+
+
+
+
+
+
+
+
+
+## (Frequentist) Confidence intervals for two means
+
+* We will study mean differences between two groups.
+* We'll construct some confidence intervals for a difference in means
+* The concepts are the same, with a few more complexities
+
+
+### Mean differences in the spinal cord data
+
+```{r}
+histinfo = hist(hip$RIGHTHIPPO, plot = FALSE)
+hist(hip$RIGHTHIPPO[ hip$DX=='HC'], breaks = histinfo$breaks, main="Histogram of R hippocampus", 
+     xlab="Volume", col=rgb(1,0,0,.5), border=NA)
+hist(hip$RIGHTHIPPO[ hip$DX=='MCI'], breaks=histinfo$breaks, col=rgb(0,0,1,.5), add=TRUE, border=NA)
+legend('topright', fill=c(rgb(1,0,0,.5), rgb(0,0,1,.5)), legend=c('HC', 'MCI'), bty='n')
+```
+
+
+
+
+![](figures/hipp.jpeg){ width=50% }
+
+
+* "Is there a difference in the size of the left/right hippocampus between HC and those with MCI?"
+* Let $\mu_h$ denote the mean for healthy participants and $\mu_p$ denote the mean for patients.
+
+
+### Mean differences
+
+* Here is the context:
+\[
+\begin{align*}
+Y_i & \sim N(\mu_0, \sigma^2_h) \text{ for $i=1,\ldots,n_h$}\\
+Y_i & \sim N(\mu_1, \sigma^2_p) \text{ for $i=n_h+1, \ldots, n_h+n_p$}
+\end{align*}
+\]
+where
+
+* $n_h$ -- number in group 0 (females).
+* $n_p$ -- number in group 1 (males).
+* $n := n_h + n_p$.
+* $\delta := \mu_p - \mu_h$.
+* We'll start by assuming equal variances $\sigma^2_h = \sigma^2_p$.
+* We will start off simple and relax some assumptions.
+
+
+### Hypothesis testing philosophy (recap)
+
+1. State the hypothesis.
+2. Set probability threshold for a decision.
+3. Compute the test statistic and the p-value.
+4. Retain or reject the null.
+
+#### Null hypothesis
+
+What's the null hypothesis?
+
+* 
+
+
+#### Alternative hypotheses
+
+What's the alternative hypothesis?
+
+* 
+
+#### Probability of rejection
+
+* Pick a probability for rejection. $\alpha=$
+
+
+## Wald statistic for two means
+
+* The Wald statistic with known variance is defined as $(\hat \delta - \delta)/\sqrt{\text{Var}(\hat\delta)}$.
+* We need to find $\hat \delta$ and $\widehat{\text{Var}}(\hat\delta)$, just like we did for the single mean example.
+* Derive the estimators.
+
+
+### What is the distribution of the Wald statistic?
+
+* What is the variance of each mean estimator?
+\[
+\text{Var}(\hat \mu_h) = \frac{\sigma^2_h}{n_h}
+\]
+
+* What is the variance of $\hat\delta$
+\[
+\text{Var}(\hat \delta) = n_h^{-1} \sigma^2_h + n_p^{-1} \sigma^2_p = (n_h^{-1} + n_p^{-1})\sigma^2
+\]
+(last line assumes equal variance)
+
+* Under normality with known variance then a Z-test statistic is
+\[
+\frac{(\hat \delta - \delta)}{\sqrt{(n_h^{-1} + n_p^{-1})\sigma^2}} \sim N(0, 1)
+\]
+
+
+* As is usual, the variance is not known.
+
+What is an estimator of variance?
+
+* Variance for $\widehat{\text{Var}}(\hat\mu_h) = \hat\sigma^2_h/n_h$
+\[
+\hat\sigma^2_h= (n_h-1)^{-1}\sum_{i=1}^{n_h}(X_i - \hat\mu_h)^2
+\]
+* Variance estimator for $\hat \mu_1$ is the same under equal variance assumption.
+* Equal variance *pooled variance* estimator
+\[
+\hat\sigma^2 = \frac{ \sum_{i=1}^{n_h}(X_i - \hat\mu_h)^2 +  \sum_{i=1}^{n_p}(X_i - \hat\mu_p)^2}{ (n_h-1) + (n_p-1)}
+\]
+
+* This gives the usual form of the test statistic that we can use for confidence intervals and testing, except now with flavors of two means.
+\[
+\frac{\{ \hat\delta-\delta \}}{\sqrt{(n_h^{-1} + n_p^{-1})\hat\sigma^2}} = \frac{\{ (\hat\mu_h - \hat\mu_p)-(\mu_h - \mu_p)\}}{\sqrt{(n_h^{-1} + n_p^{-1})\hat\sigma^2}}
+\]
+
+
+
+
+```{r, echo=TRUE}
+nh = sum(hip$DX=='HC')
+np = sum(hip$DX=='MCI')
+hc = hip$RIGHTHIPPO[hip$DX=='HC']
+mci = hip$RIGHTHIPPO[hip$DX=='MCI']
+muhHat = mean(hc)
+mupHat = mean(mci)
+# variance of the X_i's
+pooledVar = (var(hc)*(nh-1) + var(mci)*(np-1))/(nh+np-2)
+
+
+Tstat = (mupHat-muhHat)/sqrt( (1/nh + 1/np)*pooledVar )
+
+TtestResults = t.test(hc, mci, var.equal = TRUE)
+
+# assuming test statistic under H_0 is t(nf+nm-2)
+alpha = 0.05
+qt(1-alpha/2, df = nh+np-2)
+
+pt(abs(Tstat), df = nh+np-2, lower.tail=FALSE) * 2
+
+# Under H_0, T (our test statistic) ~ t(nf +nm-2), T_obs=abs(4.2596)
+# all do the same thing
+#2*(1-pt(, df = nf+nm-2))
+#2*(pt(, df = nf+nm-2, lower.tail = FALSE))
+#pt(, df = nf+nm-2, lower.tail = TRUE) + pt(, df = nf+nm-2, lower.tail = FALSE)
+
+```
+
+
+
+
+
+### Assumptions we've made for equal variance two-sample t-test so far
+
+* 
+* 
+* Equal variance
+
+
+
+
+
+
+
+
+## Unequal variances: Welch's t-test
+
+### Unequal variance formula
+
+* When the variances are not equal, the variance of $\hat\delta$ is
+\[
+\sigma_{\hat\delta}^2 = n_0^{-1} \sigma^2_0 + n_1^{-1} \sigma^2_1
+\]
+
+\[
+\begin{align*}
+\hat \sigma^2_0 & = (n_0-1)^{-1} \sum_{i=1}^{n_0}(X_i - \hat\mu_0)^2
+\end{align*}
+\]
+
+Then, plugging-in to get a variance estimator for $\hat\delta$
+\[
+\hat\sigma^2 = n_0^{-1} \hat\sigma^2_0 + n_1^{-1} \hat\sigma^2_1
+\]
+
+
+### Unequal variances test statistic
+* What is the distribution of
+\[
+\frac{(\hat \delta - \delta)}{\sqrt{n_0^{-1} \hat\sigma^2_0 + n_1^{-1} \hat\sigma^2_1}}
+\]
+* Nobody knows the distribution this statistic.
+
+
+### Satterthwaite approximation
+
+* Satterthwaite came-up with a way to approximate the distribution of $\hat \sigma^2 =n_0^{-1} \hat\sigma^2_0 + n_1^{-1} \hat\sigma^2_1$ with a chi-square distribution
+* Note that $\E \hat\sigma^2 = \sigma^2$
+* This is the general premise:
+  + $(n_0-1)\hat\sigma^2_0/\sigma_0^2 \sim \chi^2(n_0-1)$, and same for $\hat\sigma^2_1$
+  + Imagine if we could approximate the distribution of $\nu \frac{\hat\sigma^2}{\sigma^2}$ with a chi-squared distribution on $\nu$ degrees of freedom, then
+\[
+\frac{(\hat \delta - \delta)/\sigma^2}{ \sqrt{\nu \hat\sigma^2/\sigma^2/\nu}} \sim t(\nu) \text{ (approximately) },
+\]
+because $\nu \hat\sigma^2/\sigma^2 \sim \chi^2(\nu)$
+* How do we find $\nu$?
+  + Satterthwaite proposed finding $\nu$ by matching the mean and variance of $\nu W/\sigma^2$ to a chi-squared distribution and solving for $\nu$.
+  + That yields the formula
+\[
+\nu = \frac{ \left(n_0^{-1}\hat\sigma^2_0 + n_1^{-1}\hat\sigma^2_1 \right)}{n_0^{-2}(n_0-1)\hat\sigma^4_0 + n_1^{-2}(n_1-1)\hat\sigma^4_1}
+\]
+  + Welch was the one who did it for the t-test.
+  + It's a very ugly formula, but the approximation works very well, such that it is the default t-test in `R`.
+
+
+### Unequal variance t-test in CS C4 data
+
+```{r, echo=TRUE}
+nh = sum(hip$DX=='HC')
+np = sum(hip$DX=='MCI')
+hc = hip$RIGHTHIPPO[hip$DX=='HC']
+mci = hip$RIGHTHIPPO[hip$DX=='MCI']
+muhHat = mean(hc)
+mupHat = mean(mci)
+
+# This is no longer the correct variance estimator
+pooledVar = (var(hc)*(nh-1) + var(mci)*(np-1))/(nh+np-2)
+Tstat = (muhHat-mupHat)/sqrt((1/nh + 1/np)*pooledVar )
+satterTstat = (muhHat-mupHat) / sqrt(var(hc)/nh + var(mci)/np)
+
+TtestResults = t.test(hc, mci)
+
+# assuming test statistic under H_0 is t(nf+nm-2)
+alpha = 0.05
+qt(1-alpha/2, df = nh+np-2)
+
+# p-value is equal to the probability of a result as or more extreme as T_obs
+#T_obs = abs(-4.2731)
+#2*pt(abs(T_obs), df=78.365, lower.tail=FALSE)
+
+# assuming test statistic under H_0 is t(nf+nm-2)
+#alpha = 0.05
+#qt(1-alpha/2, df = 78.365)
+
+```
+
