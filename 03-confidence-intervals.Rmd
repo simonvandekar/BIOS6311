@@ -498,6 +498,7 @@ Today we will:
 
 
 ```{r, echo=TRUE}
+load('../datasets/smith_cervical_sc/tpmf.rdata')
 hist(mf$`C3 CSA`)
 
 t.test(mf$`C3 CSA`)
@@ -570,8 +571,6 @@ alpha = 0.05
 # to simulate the null in the ECT data
 # ect = read.csv('../datasets/ect/ect.csv')
 # ECT = ect$cgi.i
-mu = 3
-sigma = 1
 
 simResults = data.frame(n = ns)
 simResults[ , c('Zexact_coverage', 'Zapprox_coverage', 'T_coverage', 'Zexact_width', 'Zapprox_width', 'T_width')] = NA
@@ -582,7 +581,7 @@ for(n in ns){
   
   for(sim in 1:nsim){
     # draw a random sample, normal or skewed
-    X = rnorm(n, sd=sigma)# mu +  (rgamma(n, shape = 1.2, rate = 5) - 1.2/5)/sqrt(1.2)*5 # rnorm(n, sd=sigma) #  # sample(n, fakeECT, replace=TRUE)
+    X =  mu + (rgamma(n, shape = 1.2, rate = 5) - 1.2/5)/sqrt(1.2)*5 # rnorm(n, sd=sigma)# +  (rgamma(n, shape = 1.2, rate = 5) - 1.2/5)/sqrt(1.2)*5 # rnorm(n, sd=sigma) #  # sample(n, fakeECT, replace=TRUE)
     stdev = sd(X)
     # construct the Zexact confidence interval
     CIs$mean[sim] = mean(X)
@@ -612,7 +611,7 @@ legend('bottomright', legend=c('Zexact', 'Zapprox', 'T'), col=c('black', 'red', 
 plot(simResults$n, simResults$Zexact_width, type='b', ylim=c(0, 2), ylab='CI width', xlab='n', main='CI width')
 points(simResults$n, simResults$Zapprox_width, type='b',  col='red')
 points(simResults$n, simResults$T_width, type='b', col='blue')
-legend('bottomright', legend=c('Zexact', 'Zapprox', 'T'), col=c('black', 'red', 'blue'), bty='n', lty=2)
+legend('topright', legend=c('Zexact', 'Zapprox', 'T'), col=c('black', 'red', 'blue'), bty='n', lty=2)
 
 
 
@@ -634,10 +633,10 @@ legend('bottomright', legend=c('Zexact', 'Zapprox', 'T'), col=c('black', 'red', 
 
 
 ```{r}
-hist(ect$cgi.i, xlab='CGI-I', breaks = c(0:8)-0.5)
-qqnorm(scale(ect$cgi.i)); abline(a=0, b=1)
-ect$cgi.i - mean(ect$cgi.i)
-t.test(ect$cgi.i)
+# hist(ect$cgi.i, xlab='CGI-I', breaks = c(0:8)-0.5)
+# qqnorm(scale(ect$cgi.i)); abline(a=0, b=1)
+# ect$cgi.i - mean(ect$cgi.i)
+# t.test(ect$cgi.i)
 ```
 
 
@@ -679,11 +678,11 @@ where $X \sim N(0,1)$.
 
 Conditional on the value $X_o \sim \text{Binom}(p)$ (treat it as nonrandom), define $p_\ell(X_o)$ as the value that satisfies
 \[
-0.975 = \sum_{k=0}^{X_o-1}{ n \choose k} p_{\ell}^k(1-p_\ell)^{n-k}
+0.975 \ge \sum_{k=0}^{X_o-1}{ n \choose k} p_{\ell}^k(1-p_\ell)^{n-k}
 \]
 and $p_u(X_o)$ as the value that satisfies
 \[
-0.025 = \sum_{k=0}^{X_o}{ n \choose k} p_{u}^k(1-p_u)^{n-k}
+0.025 \le \sum_{k=0}^{X_o}{ n \choose k} p_{u}^k(1-p_u)^{n-k}
 \]
 
 ### Picture of this interval

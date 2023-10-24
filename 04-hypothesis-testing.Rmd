@@ -1,7 +1,7 @@
 
 # Hypothesis testing
 
-## Recap
+## Recap of confidence intervals
 
 ### hat is the interpretation of confidence intervals?
 \[
@@ -160,21 +160,10 @@ H_A: \delta < 0.
 
 
 
+<!-- ### Restating the ADNI paired test hypothesis -->
 
-
-
-### Hypothesis testing philosophy recap
-
-1. State the hypothesis.
-2. Set probability threshold for a decision.
-3. Compute the test statistic and the p-value.
-4. Retain or reject the null.
-
-
-### Restating the ADNI paired test hypothesis
-
-* "In healthy subjects, is there a difference in the size of the left and right hippocampi?"
-* $X_i = L_i - R_i$
+<!-- * "In healthy subjects, is there a difference in the size of the left and right hippocampi?" -->
+<!-- * $X_i = L_i - R_i$ -->
 
 ### Hypothesis test probabilities
 
@@ -209,13 +198,13 @@ n = nrow(hip)
 
 # Rejection threshold for t-distributed statistic such the probability it is beyond this value is equal to alpha=0.05
 alpha = 0.05
-qt(0.025, df=n-1)
-qt(0.975, df=n-1)
+c(lowerTquantile=qt(0.025, df=n-1),
+upperTquantile=qt(0.975, df=n-1))
 
 # test statistic in observed data
-deltaHat
-sigmaHat
-deltaHat/sigmaHat*sqrt(n)
+c(deltaHat=deltaHat,
+sigmaHat = sigmaHat,
+Tobs = deltaHat/sigmaHat*sqrt(n))
 
 ```
 
@@ -241,11 +230,11 @@ sigmaHat = sd(X)
 n = nrow(hip)
 
 # test statistic in observed data
-deltaHat
-sigmaHat
-deltaHat/sigmaHat*sqrt(n)
+c(deltaHat=deltaHat,
+sigmaHat = sigmaHat,
+Tobs = deltaHat/sigmaHat*sqrt(n))
 
-2 * pt(-abs(deltaHat/sigmaHat*sqrt(n)), n-1)
+pvalue = 2 * pt(-abs(deltaHat/sigmaHat*sqrt(n)), n-1)
 ```
 
 ## Retaining or rejecting the null
@@ -256,7 +245,7 @@ deltaHat/sigmaHat*sqrt(n)
 
 
 
-### Type 1 and type 2 errors
+## Type 1 and type 2 errors
 
 * After making a decision, there are 4 possible outcomes that can occur
 
@@ -269,7 +258,8 @@ deltaHat/sigmaHat*sqrt(n)
 ### Using the `t.test` function
 ```{r, echo=TRUE}
 
-t.test( hip$LEFTHIPPO - hip$RIGHTHIPPO, alternative = 'two.sided')
+ttest = t.test( hip$LEFTHIPPO - hip$RIGHTHIPPO, alternative = 'two.sided')
+ttest
 t.test(hip$LEFTHIPPO, hip$RIGHTHIPPO, paired = TRUE, alternative = 'two.sided')
 ```
 
@@ -278,7 +268,7 @@ t.test(hip$LEFTHIPPO, hip$RIGHTHIPPO, paired = TRUE, alternative = 'two.sided')
 ## What is the probability of observing a result this extreme under $H_0: \delta=0$?
 
 \[
-\P(\vert T\rvert > -1.501723 \mid H_0) = 2\times \Phi(-1.501723)
+\P(\vert T\rvert > \text{`r ttest$statistic`} \mid H_0) = 2\times \Phi(\text{`r ttest$statistic`})
 \]
 This is the $p$-value. It is conditional on our dataset. Across datasets it is random.
 
@@ -303,6 +293,7 @@ This is the $p$-value. It is conditional on our dataset. Across datasets it is r
 ## Two-tailed hypotheses
 
 * We were using the absolute value because our hypothesis was just that the left and right hippocampus were different.
+* *Most commonly, people perform a two-tailed test*
 * We can also do a one-tailed hypothesis test
 
 
@@ -374,6 +365,8 @@ t.test( hip$LEFTHIPPO, hip$RIGHTHIPPO, paired = TRUE, alternative = 'less')
 
 ## Practice questions
 
+### Types of errors
+
 Review with questions:
 
 
@@ -391,6 +384,19 @@ Review with questions:
 \]
 
 * 8. How to compute a two-tailed p-value?
+
+### Performing a two-tailed test in the HCP sleep data
+
+* Use a t-test to test whether the population mean of sleep is equal to 8. **Hint** You will have to set the null value equal to 8.
+* Write code to reproduce all the output from the t-test command you ran (`t`, `df`, `p-value`, `95 percent confidence interval`, `mean of x`).
+
+```{r}
+hcp = read.csv('../datasets/hcp/hcp.csv')
+# amount of sleep variable
+# hcp$PSQI_AmtSleep
+```
+
+
 
 
 ```{r, echo=FALSE, eval=FALSE}

@@ -32,11 +32,11 @@ header-includes:
 - \usepackage[shortlabels]{enumitem}
 - \renewcommand{\P}{\mathbb{P}}
 - \newcommand{\E}{\mathbb{E}}
+- \newcommand{\R}{\mathbb{R}}
 - \newcommand{\Var}{\mathrm{Var}}
 - \newcommand{\benum}{\begin{enumerate}}
 - \newcommand{\eenum}{\end{enumerate}}
 ---
-
 
 ```{r setup, echo=FALSE, cache=FALSE, message=FALSE}
 knitr::knit_hooks$set(GPs=function(before, options, envir){
@@ -44,7 +44,7 @@ if (before){
   cex=1.5
 par(mgp=c(1.7,.7,0), lwd=1.5, lend=2,
     cex.lab=0.8*cex, cex.axis=0.8*cex, cex.main=1*cex,
-    mar=c(2.8,2.8,1.8,.2), bty='l', oma=c(0,0,2,0))}
+    mar=c(2.8,2.8,1.8,.5), bty='l', oma=c(0,0,2,0))}
 })
 knitr::opts_chunk$set(echo = TRUE, fig.height = 3, fig.width = 3, cache=FALSE, GPs=TRUE)
 set.seed(100)
@@ -57,14 +57,11 @@ library(tidyverse)
 library(RESI)
 ```
 
-
-# Course information {-}
+# Course information {.unnumbered}
 
 This document includes all the course notes for Vanderbilt Biostatistics BIOS6311 *Principles of Modern Biostatistics*.
 
-
-## MIDTERM NOVEMBER 9TH 2023 {-}
-
+## MIDTERM NOVEMBER 9TH 2023 {.unnumbered}
 
 From that Rice book above here are some good practice problems:
 
@@ -74,31 +71,29 @@ From that Rice book above here are some good practice problems:
 
 **Section 7.7:** 3, 8, 10, 16, 17, 18, 21
 
-## Syllabus {-}
+## Syllabus {.unnumbered}
 
 **Schedule:** Tuesdays/Thursdays 10:30am-12pm (in-person)\
 **Lab:** Tuesdays 4pm-5pm (in-person)\
 **Instructor:** [Simon Vandekar](https://simonvandekar.github.io/) (he/him/his)\
 **TA:** [Yeji Kuo](https://www.vanderbilt.edu/biostatistics-graduate/cpt/people/yeji-ko/)\
 **Office hours:** by appointment\
-**Email:** simon.vandekar@vumc.org. I do not check my vanderbilt.edu email address, regularly.
-
+**Email:** [simon.vandekar\@vumc.org](mailto:simon.vandekar@vumc.org){.email}. I do not check my vanderbilt.edu email address, regularly.
 
 ### Overview
-Biostatistics (and statistics) is a framework for learning about the world that is based on the theory of probability. The goal of this class is to teach the **concepts** of biostatistics through basic examples that form the **content** of the class using software tools for reproducible statistical research in R. The **concepts** are the basis for modern statistical research – i.e. the foundational concepts you learn here can be used to evaluate modern statistical methods. The objective **content** will cover basic statistical objects (e.g. means), with as much focus as possible on rigorous modern methods. My interests are in medical imaging in the fields of psychology, psychiatry, and cellular biology, so I will use examples from those fields, hoping to pique your interest in those research areas.
 
+Biostatistics (and statistics) is a framework for learning about the world that is based on the theory of probability. The goal of this class is to teach the **concepts** of biostatistics through basic examples that form the **content** of the class using software tools for reproducible statistical research in R. The **concepts** are the basis for modern statistical research -- i.e. the foundational concepts you learn here can be used to evaluate modern statistical methods. The objective **content** will cover basic statistical objects (e.g. means), with as much focus as possible on rigorous modern methods. My interests are in medical imaging in the fields of psychology, psychiatry, and cellular biology, so I will use examples from those fields, hoping to pique your interest in those research areas.
 
-### Goal 
+### Goal
 
 Upon completion of this course, you should be able to evaluate statistical methods based on their operating characteristics. While the concepts for methods evaluation we will learn are more general, they will be taught in the context of one and two-sample statistical methods within Frequentist, Likelihood, and Bayesian philosophies with as much focus as possible on rigorous modern methods. If the course is effective you will
 
-  1. Strengthen mathematical tools for understanding and evaluating statistical methods
-  2. Learn to analyze a dataset using basic statistical inference tools (e.g. one sample/two sample tests)
-  3. Learn to program statistical evaluation tools in R
-  4. Learn to use the goals and concepts of the three statistical philosophies
-  5. Evaluate statistical methods using simulations and bootstrapping
-  6. Understand how statisticians choose and design statistical methods
-
+1.  Strengthen mathematical tools for understanding and evaluating statistical methods
+2.  Learn to analyze a dataset using basic statistical inference tools (e.g. one sample/two sample tests)
+3.  Learn to program statistical evaluation tools in R
+4.  Learn to use the goals and concepts of the three statistical philosophies
+5.  Evaluate statistical methods using simulations and bootstrapping
+6.  Understand how statisticians choose and design statistical methods
 
 ### Datasets
 
@@ -108,129 +103,124 @@ Most of the course will be taught through applications with a dataset. I will ma
 
 Homework will be your primary grade for the course. It will also be the way that you will learn software tools through hands on experience: we will plan for you to submit most of homework assignments using Rmarkdown.
 
-
 ### Exams and Quizzes
 
 Previously, I just had fill-in-the-blank quizzes and a final exam. This time we will have an open-answer midterm and final to help prepare you for the first qualifying exam.
 
 ### Class
 
-This will be an in-person class, but I might record the lectures. We will meet in-person twice a week (Tues/Thurs 10:30am-12pm). In class meetings we’ll be working to solve math and programming problems together that will help you do your homework.
+This will be an in-person class, but I might record the lectures. We will meet in-person twice a week (Tues/Thurs 10:30am-12pm). In class meetings we'll be working to solve math and programming problems together that will help you do your homework.
 
 ### Lab
 
 There will be as many lab activities as I have time to plan. Otherwise that time will be used to help debug code, catch up on missed classes, or learn the materials and work together or in groups on the homework.
 
-Background necessary for the course: The official background for the course is Calculus 1. I will teach as if you have taken introductory probability, such as “A first course in probability,” by Ross. I assume novice level literacy in R statistical programming, but experience in another language will be helpful to learning R (in particular Matlab and Python). I will use some linear algebra if the class as a whole seems to have sufficient background in this area.
+Background necessary for the course: The official background for the course is Calculus 1. I will teach as if you have taken introductory probability, such as "A first course in probability," by Ross. I assume novice level literacy in R statistical programming, but experience in another language will be helpful to learning R (in particular Matlab and Python). I will use some linear algebra if the class as a whole seems to have sufficient background in this area.
 
 ### Text
-I’ve based the class off of previous versions by Robert Greevy and “Mathematical Statistics and Data Analysis,” by Rice. I will not explicitly use this book in the class, but it is probably the most complete reference for the material. I will point to other references as they come up.
+
+I've based the class off of previous versions by Robert Greevy and "Mathematical Statistics and Data Analysis," by Rice. I will not explicitly use this book in the class, but it is probably the most complete reference for the material. I will point to other references as they come up.
 
 ### Class resources
 
 Previously I've done everything in Brightspace, but to make it more accessible, I am going to host it through a [course webpage](https://simonvandekar.github.io/BIOS6311) instead.
 
-* [Brightspace](https://brightspace.vanderbilt.edu/d2l/home/440983){target="_blank"} - For class communication, homework submission and grading.
-* [Pumble](https://invite.pumble.com/c15tkrv8wvq1y9rtla) - For class communication.
-* [Box](https://vanderbilt.box.com/s/xfpxeparbjeugr6q1oslexlr8r5y1ewd) - For sharing datasets and files.
+-   [Brightspace](https://brightspace.vanderbilt.edu/d2l/home/440983){target="_blank"} - For class communication, homework submission and grading.
+-   [Pumble](https://invite.pumble.com/c15tkrv8wvq1y9rtla) - For class communication.
+-   [Box](https://vanderbilt.box.com/s/xfpxeparbjeugr6q1oslexlr8r5y1ewd) - For sharing datasets and files.
 
 ### Diversity and inclusion:
 
-Creativity is critical to research in statistics. In statistics, creativity comes in the form of questions (e.g. what happens if this model is incorrect?; when I condition on a subset of the data, what things are still random?) Diversity is at the heart of creativity, because our perspectives shape how we see the world. By working together to consider other’s perspectives, we will learn more about the problems we discuss. For this reason, please interact with each other in a spirit of curiosity and empathy (not just about the class content, but as you learn about the people you will go through grad school with). I expect this class to be a welcoming environment for all students, regardless of background, skin color, gender identity, orientation, spiritual belief or any other personal feature.
+Creativity is critical to research in statistics. In statistics, creativity comes in the form of questions (e.g. what happens if this model is incorrect?; when I condition on a subset of the data, what things are still random?) Diversity is at the heart of creativity, because our perspectives shape how we see the world. By working together to consider other's perspectives, we will learn more about the problems we discuss. For this reason, please interact with each other in a spirit of curiosity and empathy (not just about the class content, but as you learn about the people you will go through grad school with). I expect this class to be a welcoming environment for all students, regardless of background, skin color, gender identity, orientation, spiritual belief or any other personal feature.
 
-### Course outline 
+### Course outline
 
 I might adapt course content based on the mine or the classes interests. This is generally how it has looked:
 
-1. Probability tools and `R`
-2. Law of Large Numbers and Central Limit Theorem
-3. Confidence intervals for a single mean
-    a. Z intervals
-    b. T intervals
-    c. CIs for binomial proportion
-4. Hypothesis testing
-    a. Paired means
-    b. Two means
-    c. Welch's correction
-5. Likelihood theory
-    a.	Features of the likelihood function
-6.	Bayesian statistics
-    a.	Binomial proportion
-    b.	Normal mean
-7.	Contingency tables and tests for two binomial means (might switch this for effect sizes)
-8.	Resampling and Nonparametric methods
-9.	Overview of regression
-
+1.  Probability tools and `R`
+2.  Law of Large Numbers and Central Limit Theorem
+3.  Confidence intervals for a single mean
+    a.  Z intervals
+    b.  T intervals
+    c.  CIs for binomial proportion
+4.  Hypothesis testing
+    a.  Paired means
+    b.  Two means
+    c.  Welch's correction
+5.  Likelihood theory
+    a.  Features of the likelihood function
+6.  Bayesian statistics
+    a.  Binomial proportion
+    b.  Normal mean
+7.  Contingency tables and tests for two binomial means (might switch this for effect sizes)
+8.  Resampling and Nonparametric methods
+9.  Overview of regression
 
 ## Labs
 
 All the shared files are [here](https://vanderbilt.box.com/s/xfpxeparbjeugr6q1oslexlr8r5y1ewd). Here is a list of links to the lab activities.
 
-* [Week 1](https://vanderbilt.box.com/s/d7c8x5cza8fvtmk31y03vdf1ip42a96y)
+-   [Week 1](https://vanderbilt.box.com/s/d7c8x5cza8fvtmk31y03vdf1ip42a96y)
 
 ## Homework
 
 Here is a list of links for the homework.
 
-* [Homework 1](https://vanderbilt.box.com/s/ebnmqdmdcdqpg08c7wz3zbsw3iwwernu)
-* [Homework 2](https://vanderbilt.box.com/s/jn0vnuuvzfl9zowj08hw8fejxqy7be8l)
-* [Homework 3](https://vanderbilt.box.com/s/m3p3sqvh6y32wy27exn59usjtctow2vt)
+-   [Homework 1](https://vanderbilt.box.com/s/ebnmqdmdcdqpg08c7wz3zbsw3iwwernu)
+-   [Homework 2](https://vanderbilt.box.com/s/jn0vnuuvzfl9zowj08hw8fejxqy7be8l)
+-   [Homework 3](https://vanderbilt.box.com/s/m3p3sqvh6y32wy27exn59usjtctow2vt)
 
-# Glossary/Jargon {-}
+# Glossary/Jargon {.unnumbered}
 
-* **Reference distribution** - the standardized distribution used to compute probabilities. Examples include the Normal distribution, Chi-squared distribution, T distribution, and F distribution.
-* **Sampling distribution** - the true distribution of a statistic drawn from data randomly sampled from a distribution. For a test statistic, it may not be the same as the reference distribution if we are using approximations or assumptions are violated.
-* **Statistic** - a random variable computed as a function of a random sample.
-* **Test statistic** - the standardized value, which is assumed to follow the reference distribution.
-* **One/two tailed hypothesis**
-* **Paired/unpaired test**
-* **One/two sample test**
-* **Skew**
-* **Type 1 error rate** - the probability of falsely rejecting the null when it is true.
-* **Type 2 error rate** - the probability of falsely retaining the null when it is false.
-* **Power** - the probability of correctly rejecting the null.
-* **Wald statistic** - A statistic derived as the estimator minus the parameter divided by the variance of the estimator times square root of $n$, $\frac{\sqrt{n}(\hat\mu - \mu)}{\text{Var}(\sqrt{n} \hat\mu)}$.
-* **Parameter** - an unknown population value.
-* **Estimator** - a statistic used to estimate a parameter. 
-* **Estimate** - a function of an observed sample used to estimate a parameter (not random).
-* **Coverage** - The proportion of the time that an interval captures the true value of the parameter.
-* **Width/Length** - The expected width/length of a confidence interval is the distance between the upper and lower bounds.
-* **Consistent estimator** - an estimator that converges to the target parameter as the sample size gets bigger.
-* **Standard error** - the standard deviation of a statistic.
+-   **Reference distribution** - the standardized distribution used to compute probabilities. Examples include the Normal distribution, Chi-squared distribution, T distribution, and F distribution.
+-   **Sampling distribution** - the true distribution of a statistic drawn from data randomly sampled from a distribution. For a test statistic, it may not be the same as the reference distribution if we are using approximations or assumptions are violated.
+-   **Statistic** - a random variable computed as a function of a random sample.
+-   **Test statistic** - the standardized value, which is assumed to follow the reference distribution.
+-   **One/two tailed hypothesis**
+-   **Paired/unpaired test**
+-   **One/two sample test**
+-   **Skew**
+-   **Type 1 error rate** - the probability of falsely rejecting the null when it is true.
+-   **Type 2 error rate** - the probability of falsely retaining the null when it is false.
+-   **Power** - the probability of correctly rejecting the null.
+-   **Wald statistic** - A statistic derived as the estimator minus the parameter divided by the variance of the estimator times square root of $n$, $\frac{\sqrt{n}(\hat\mu - \mu)}{\text{Var}(\sqrt{n} \hat\mu)}$.
+-   **Parameter** - an unknown population value.
+-   **Estimator** - a statistic used to estimate a parameter.
+-   **Estimate** - a function of an observed sample used to estimate a parameter (not random).
+-   **Coverage** - The proportion of the time that an interval captures the true value of the parameter.
+-   **Width/Length** - The expected width/length of a confidence interval is the distance between the upper and lower bounds.
+-   **Consistent estimator** - an estimator that converges to the target parameter as the sample size gets bigger.
+-   **Standard error** - the standard deviation of a statistic.
 
-
-
-# How to follow along in this class {-}
-
+# How to follow along in this class {.unnumbered}
 
 ## Class notes
 
 I will use the whiteboard and Rstudio for teaching. The notes and code will be based of of what is available in this document.
 
 ### Written notes
+
 Because I will be writing on the whiteboard for written notes, you can
 
-* Follow along with your own notebook.
-* Print the notes and add your own. To print the notes, Push the lines in the hover menu at the top to close the sidebar and then print to pdf or paper in your browser. Please print two-sided.
-* Save as a PDF and open in Notes app on a tablet where you can annotate the file.
+-   Follow along with your own notebook.
+-   Print the notes and add your own. To print the notes, Push the lines in the hover menu at the top to close the sidebar and then print to pdf or paper in your browser. Please print two-sided.
+-   Save as a PDF and open in Notes app on a tablet where you can annotate the file.
 
 ### Code notes
+
 The code examples in the course may be fully written in the notes, or they may be barebones that we complete together in class. I will try to update the code in this document, so that the code is completed here after we have written it in class. To follow along with `R` code you can
 
-* Create an Rmarkdown file with a section for each chunk of example code we run and complete the code as we complete it in class.
-* Write the code in separate .R scripts organized in a file for the course.
+-   Create an Rmarkdown file with a section for each chunk of example code we run and complete the code as we complete it in class.
+-   Write the code in separate .R scripts organized in a file for the course.
 
 ## Labs and homeworks
 
-This document and all the files in the course are compiled using Rmarkdown. For completing the labs and homework assignments, I'm assuming that you will download the files and type your answers into the documents.
-There will be a bit of a learning curve, so it's best to start working with it on the first assignments, so that you don't feel too overwhelmed trying to learn Rmarkdown and the course content.
+This document and all the files in the course are compiled using Rmarkdown. For completing the labs and homework assignments, I'm assuming that you will download the files and type your answers into the documents. There will be a bit of a learning curve, so it's best to start working with it on the first assignments, so that you don't feel too overwhelmed trying to learn Rmarkdown and the course content.
 
-Check out the [Week 1](https://vanderbilt.box.com/s/d7c8x5cza8fvtmk31y03vdf1ip42a96y) lab assignment as an example of the folder structure I will use for homework and labs.
-You can download the whole folder and work from there. There are the following files in the folder that you need to pay attention to:
+Check out the [Week 1](https://vanderbilt.box.com/s/d7c8x5cza8fvtmk31y03vdf1ip42a96y) lab assignment as an example of the folder structure I will use for homework and labs. You can download the whole folder and work from there. There are the following files in the folder that you need to pay attention to:
 
-* `lab1_2.Rproj` - this is `R` project file that opens up a saved workspace in Rstudio.
-* `lab1_2.Rmd` - this is the Rmarkdown file that you can edit to complete your answers.
-* `lab1_2.html` - this is the output from the Rmarkdown file. When you add your answers and hit the Knit button in Rstudio it will compile this file. You can change the format between html/pdf/docx.
+-   `lab1_2.Rproj` - this is `R` project file that opens up a saved workspace in Rstudio.
+-   `lab1_2.Rmd` - this is the Rmarkdown file that you can edit to complete your answers.
+-   `lab1_2.html` - this is the output from the Rmarkdown file. When you add your answers and hit the Knit button in Rstudio it will compile this file. You can change the format between html/pdf/docx.
 
 The other files are intermediate files created after you push the Knit button.
-
