@@ -218,6 +218,7 @@ Tobs = deltaHat/sigmaHat*sqrt(n))
 p = \P(\lvert T \rvert \ge \lvert T_{obs} \rvert ) \le \P(\lvert T \rvert  > t_{1-\alpha/2,(n-1)} | H_0) \le \alpha
 \]
 
+
 * In words, the p-value is the probability we get a statistic at least as large as the one we observed if the null hypothesis is true.
 
 
@@ -245,7 +246,7 @@ pvalue = 2 * pt(-abs(deltaHat/sigmaHat*sqrt(n)), n-1)
 
 
 
-## Type 1 and type 2 errors
+### Type 1 and type 2 errors
 
 * After making a decision, there are 4 possible outcomes that can occur
 
@@ -255,7 +256,10 @@ pvalue = 2 * pt(-abs(deltaHat/sigmaHat*sqrt(n)), n-1)
 | $H_0$ False   | Type 2 error $\P(\lvert T \rvert< t_{1-\alpha/2,(n-1)} | H_a)$ | Power  $\P(\lvert T \rvert\ge t_{1-\alpha/2,(n-1)} | H_a)$ |
 
 
-### Using the `t.test` function
+## Using the `t.test` function in ADNI
+
+**Methods** In order to test whether left and right hippocampal volumes are equal in healthy older adults, we performed a t-test on the difference in volume for each subject (left - right).
+
 ```{r, echo=TRUE}
 
 ttest = t.test( hip$LEFTHIPPO - hip$RIGHTHIPPO, alternative = 'two.sided')
@@ -263,9 +267,17 @@ ttest
 t.test(hip$LEFTHIPPO, hip$RIGHTHIPPO, paired = TRUE, alternative = 'two.sided')
 ```
 
+* For results sections, if the analysis is complicated and will take a paragraph to describe, I might remind the reader what we're doing in the first sentence of the results.
+
+**Results** We used a one-sample t-test to test whether the difference in left and right hippocampal volume was equal to zero. There was evidence for a difference between left and right hippocampal volumes ($T = \text{`r round(ttest$statistic, 2)`}$, $\mathrm{df}= \text{`r ttest$parameter`}$, $p<0.001$ ) with the left hippocampus being smaller on average ($\text{left-right}=\text{`r round(ttest$estimate, 2)`mm}^3$, confidence interval (CI)= [`r round(ttest$conf.int, 2)`]).
 
 
-## What is the probability of observing a result this extreme under $H_0: \delta=0$?
+* More realistically, for a t-test I would just present the result.
+
+**Results** We found evidence for a difference between left and right hippocampal volumes ($T = \text{`r round(ttest$statistic, 2)`}$, $\mathrm{df}= \text{`r ttest$parameter`}$, $p<0.001$ ) with the left hippocampus being smaller on average ($\text{left-right}=\text{`r round(ttest$estimate, 2)`mm}^3$, confidence interval (CI)= [`r round(ttest$conf.int, 2)`]).
+
+
+* What is the probability of observing a result this extreme under $H_0: \delta=0$?
 
 \[
 \P(\vert T\rvert > \text{`r ttest$statistic`} \mid H_0) = 2\times \Phi(\text{`r ttest$statistic`})
@@ -452,10 +464,11 @@ and reject when $p<\alpha$
 
 
 
+## Alternatives to T-test
 
 
 
-## The Z-test for hypothesis testing
+### Z-test 
 
 * If the underlying data are not normally distributed, then we use the CLT approximation
 \[
@@ -465,8 +478,11 @@ and reject when $p<\alpha$
 * We can then do all the same stuff we did with hypothesis testing for the single mean.
 * A natural question is, which of the two tests performs better? We can use simulations to answer this question.
 
+### Permutation test
 
-## Simulation setup for hypothesis testing
+
+
+## Simulations to evaluate hypothesis testing
 
 What are the metrics we care about, here?
 
@@ -846,3 +862,5 @@ qt(1-alpha/2, df = nh+np-2)
 
 ```
 
+
+## Mean difference in linear regression
