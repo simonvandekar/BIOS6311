@@ -348,7 +348,10 @@ deltaHat/sigmaHat*sqrt(n)
 # compute p-value
 pt(deltaHat/sigmaHat*sqrt(n), df=n-1)
 
-t.test( hip$LEFTHIPPO, hip$RIGHTHIPPO, paired = TRUE, alternative = 'less')
+# one tailed paired t-test 
+t.test(hip$LEFTHIPPO, hip$RIGHTHIPPO, paired = TRUE, alternative = 'less')
+
+t.test(hip$LEFTHIPPO, hip$RIGHTHIPPO, paired = TRUE)
 ```
 
 <!-- ## Defining a two tailed threshold that we talked about -->
@@ -714,9 +717,9 @@ legend('topright', fill=c(rgb(1,0,0,.5), rgb(0,0,1,.5)), legend=c('HC', 'MCI'), 
     \end{align*}
     $$ where
 
--   $n_h$ -- number in group 0 (females).
+-   $n_h$ -- number in group 0 (controls).
 
--   $n_p$ -- number in group 1 (males).
+-   $n_p$ -- number in group 1 (patients).
 
 -   $n := n_h + n_p$.
 
@@ -807,7 +810,7 @@ pooledVar = (var(hc)*(nh-1) + var(mci)*(np-1))/(nh+np-2)
 
 Tstat = (mupHat-muhHat)/sqrt( (1/nh + 1/np)*pooledVar )
 
-TtestResults = t.test(hc, mci, var.equal = TRUE)
+TtestResults = t.test(mci, hc, var.equal = TRUE)
 
 # assuming test statistic under H_0 is t(nf+nm-2)
 alpha = 0.05
@@ -820,6 +823,10 @@ pt(abs(Tstat), df = nh+np-2, lower.tail=FALSE) * 2
 #2*(1-pt(, df = nf+nm-2))
 #2*(pt(, df = nf+nm-2, lower.tail = FALSE))
 #pt(, df = nf+nm-2, lower.tail = TRUE) + pt(, df = nf+nm-2, lower.tail = FALSE)
+
+# assess normality
+qqnorm(c(scale(hc), scale(mci)))
+abline(a=0, b=1)
 
 ```
 
@@ -845,7 +852,8 @@ $$
 \end{align*}
 $$
 
-Then, plugging-in to get a variance estimator for $\hat\delta$ $$
+Then, plugging-in to get a variance estimator for $\hat\delta$
+$$
 \hat\sigma^2 = n_0^{-1} \hat\sigma^2_0 + n_1^{-1} \hat\sigma^2_1
 $$
 
@@ -912,4 +920,84 @@ qt(1-alpha/2, df = nh+np-2)
 
 ```
 
+
+
 ## Mean difference in linear regression
+
+## Permutation test for two means
+
+$$
+ \begin{align*}
+    Y_i & \sim N(\mu_0, \sigma^2_h) \text{ for $i=1,\ldots,n_h$}\\
+    Y_i & \sim N(\mu_1, \sigma^2_p) \text{ for $i=n_h+1, \ldots, n_h+n_p$}
+    \end{align*}
+$$
+where
+
+-   $n_h$ -- number in group 0 (healthy).
+
+-   $n_p$ -- number in group 1 (patients).
+
+-   $n := n_h + n_p$.
+
+-   $\delta := \mu_p - \mu_h$.
+
+-   We'll start by assuming equal variances $\sigma^2_h = \sigma^2_p$.
+
+-   Our test statistic is
+\[
+T = (\hat\mu_1 - \hat\mu_0)/\sqrt{\hat{\text{Var}}(\hat\mu_1 - \hat\mu_0)} = T(Y)
+\]
+
+### Intuition
+
+* If the null is true $\mu_1 = \mu_0$.
+* If the variances are equal, then all observations are **exchangeable**, meaning any observation could have been as likely to come from any group.
+* We can permute the values $Y_i$, and the result is equally likely under the null and we could compute a test statistic
+\[
+T^{p} = T(Y^p)
+\]
+where $Y^p$ is the permuted hippocampal data.
+* In this case, there are ${n \choose n_1}$ possible pairings. That's a lot.
+* In practice, because there are so many possible permutations, we just randomly choose a large number of permutations
+* Permutation tests compute a p-value this way for $p=1, \ldots, P$
+\[
+1/P \sum_{p=1}^P I\{ T(Y^p) \ge T\}
+\]
+* The average number of data sets where the test statistics is equal or larger than the observed value.
+
+```{r}
+
+permutationTest = function(X, Y, nperm=1000){
+ Tobs = t.test(Y[X==0], Y[X==1])$statistic
+ # randomly permutes X
+ Tperms = replicate(nperm, {Xperm = sample(X, replace=FALSE); t.test(Y[Xperm==0], Y[Xperm==1])$statistic} )
+ c(Tobs=Tobs, pvalue=mean(abs(c(Tperms, Tobs))>=abs(Tobs)))
+}
+
+
+# In the subset of data
+y = hip$RIGHTHIPPO[ hip$DX !='AD' ]
+x = ifelse(hip$DX[hip$DX !='AD' ]=='MCI', 1, 0)
+permtest = permutationTest(Y=y, X = x)
+wtest = wilcox.test(y[x==1], y[x==0], conf.int = TRUE)
+ttest = t.test(y[x==1], y[x==0])
+
+permtest
+
+wtest
+
+ttest
+
+
+# In the full sample
+permtest = permutationTest(Y=puf$iralcfm, X = as.numeric(puf$mrjmon=='yes'))
+wtest = wilcox.test(puf$iralcfm[ puf$mrjmon=='yes'], puf$iralcfm[ puf$mrjmon=='no'], conf.int = TRUE)
+ttest = t.test(puf$iralcfm[ puf$mrjmon=='yes'], puf$iralcfm[ puf$mrjmon=='no'])
+
+permtest
+
+wtest
+
+ttest
+```

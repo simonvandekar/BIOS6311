@@ -1966,6 +1966,7 @@ div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 <ul class="summary">
 <li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Course information</a>
 <ul>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#final-december-7th-2023"><i class="fa fa-check"></i>FINAL DECEMBER 7TH 2023</a></li>
 <li class="chapter" data-level="" data-path="index.html"><a href="index.html#midterm-november-9th-2023"><i class="fa fa-check"></i>MIDTERM NOVEMBER 9TH 2023</a></li>
 <li class="chapter" data-level="" data-path="index.html"><a href="index.html#syllabus"><i class="fa fa-check"></i>Syllabus</a>
 <ul>
@@ -2310,9 +2311,9 @@ div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 <li>The number of dimensions of the table depends on the number of variables and the size of each dimension depends on the number of categories.</li>
 </ul>
 <details class="chunk-details"><summary class="chunk-summary"><span class="chunk-summary-text">Code</span></summary>
-<div class="sourceCode" id="cb212"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb212-1"><a href="categorical-data.html#cb212-1" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1333</span>)</span>
-<span id="cb212-2"><a href="categorical-data.html#cb212-2" tabindex="-1"></a>puf <span class="ot">=</span> <span class="fu">readRDS</span>(<span class="st">&#39;../datasets/nsduh/puf.rds&#39;</span>)</span>
-<span id="cb212-3"><a href="categorical-data.html#cb212-3" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="fu">matrix</span>(<span class="fu">c</span>(<span class="st">&#39;a&#39;</span>, <span class="st">&#39;b&#39;</span>, <span class="st">&#39;c&#39;</span>, <span class="st">&#39;d&#39;</span>), <span class="at">nrow=</span><span class="dv">2</span>, <span class="at">dimnames=</span><span class="fu">list</span>(<span class="fu">c</span>(<span class="st">&#39;X=0&#39;</span>, <span class="st">&#39;X=1&#39;</span>), <span class="fu">c</span>(<span class="st">&#39;Y=0&#39;</span>, <span class="st">&#39;Y=1&#39;</span>) ) ) ) </span></code></pre></div>
+<div class="sourceCode" id="cb213"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb213-1"><a href="categorical-data.html#cb213-1" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1333</span>)</span>
+<span id="cb213-2"><a href="categorical-data.html#cb213-2" tabindex="-1"></a>puf <span class="ot">=</span> <span class="fu">readRDS</span>(<span class="st">&#39;../datasets/nsduh/puf.rds&#39;</span>)</span>
+<span id="cb213-3"><a href="categorical-data.html#cb213-3" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="fu">matrix</span>(<span class="fu">c</span>(<span class="st">&#39;a&#39;</span>, <span class="st">&#39;b&#39;</span>, <span class="st">&#39;c&#39;</span>, <span class="st">&#39;d&#39;</span>), <span class="at">nrow=</span><span class="dv">2</span>, <span class="at">dimnames=</span><span class="fu">list</span>(<span class="fu">c</span>(<span class="st">&#39;X=0&#39;</span>, <span class="st">&#39;X=1&#39;</span>), <span class="fu">c</span>(<span class="st">&#39;Y=0&#39;</span>, <span class="st">&#39;Y=1&#39;</span>) ) ) ) </span></code></pre></div>
 </details>
 <table>
 <thead>
@@ -2338,8 +2339,8 @@ div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 <div id="example-marijuana-and-lsd-use" class="section level3 hasAnchor" number="6.1.1">
 <h3><span class="header-section-number">6.1.1</span> Example: Marijuana and LSD use<a href="categorical-data.html#example-marijuana-and-lsd-use" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <details class="chunk-details"><summary class="chunk-summary"><span class="chunk-summary-text">Code</span></summary>
-<div class="sourceCode" id="cb213"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb213-1"><a href="categorical-data.html#cb213-1" tabindex="-1"></a>mjlsdtab <span class="ot">=</span> <span class="fu">with</span>(puf, <span class="fu">table</span>(mrjflag, lsdflag))</span>
-<span id="cb213-2"><a href="categorical-data.html#cb213-2" tabindex="-1"></a>pander<span class="sc">::</span><span class="fu">pander</span>(descr<span class="sc">::</span><span class="fu">CrossTable</span>(mjlsdtab, <span class="at">prop.r =</span> <span class="cn">FALSE</span>, <span class="at">prop.c =</span> <span class="cn">FALSE</span>, <span class="at">prop.chisq =</span> <span class="cn">FALSE</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb214"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb214-1"><a href="categorical-data.html#cb214-1" tabindex="-1"></a>mjlsdtab <span class="ot">=</span> <span class="fu">with</span>(puf, <span class="fu">table</span>(mrjflag, lsdflag))</span>
+<span id="cb214-2"><a href="categorical-data.html#cb214-2" tabindex="-1"></a>pander<span class="sc">::</span><span class="fu">pander</span>(descr<span class="sc">::</span><span class="fu">CrossTable</span>(mjlsdtab, <span class="at">prop.r =</span> <span class="cn">FALSE</span>, <span class="at">prop.c =</span> <span class="cn">FALSE</span>, <span class="at">prop.chisq =</span> <span class="cn">FALSE</span>))</span></code></pre></div>
 </details>
 <table style="width:62%;">
 <colgroup>
@@ -2402,11 +2403,11 @@ Total(%)</td>
 <div id="cohort-sampling" class="section level2 hasAnchor" number="6.2">
 <h2><span class="header-section-number">6.2</span> Cohort sampling<a href="categorical-data.html#cohort-sampling" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <details class="chunk-details"><summary class="chunk-summary"><span class="chunk-summary-text">Code</span></summary>
-<div class="sourceCode" id="cb214"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb214-1"><a href="categorical-data.html#cb214-1" tabindex="-1"></a><span class="co"># Cohort sampleing</span></span>
-<span id="cb214-2"><a href="categorical-data.html#cb214-2" tabindex="-1"></a>n <span class="ot">=</span> <span class="dv">200</span> <span class="co"># number in each group</span></span>
-<span id="cb214-3"><a href="categorical-data.html#cb214-3" tabindex="-1"></a>dat <span class="ot">=</span> puf[<span class="fu">sample</span>(<span class="fu">nrow</span>(puf), <span class="at">size =</span> n), <span class="fu">c</span>(<span class="st">&#39;mrjflag&#39;</span>, <span class="st">&#39;lsdflag&#39;</span>)]</span>
-<span id="cb214-4"><a href="categorical-data.html#cb214-4" tabindex="-1"></a>Cohortmjlsdtab <span class="ot">=</span> <span class="fu">with</span>(dat, <span class="fu">table</span>(mrjflag, lsdflag))</span>
-<span id="cb214-5"><a href="categorical-data.html#cb214-5" tabindex="-1"></a>pander<span class="sc">::</span><span class="fu">pander</span>(descr<span class="sc">::</span><span class="fu">CrossTable</span>(Cohortmjlsdtab, <span class="at">prop.r =</span> <span class="cn">TRUE</span>, <span class="at">prop.t=</span><span class="cn">FALSE</span>, <span class="at">prop.c =</span> <span class="cn">FALSE</span>, <span class="at">prop.chisq =</span> <span class="cn">FALSE</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb215"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb215-1"><a href="categorical-data.html#cb215-1" tabindex="-1"></a><span class="co"># Cohort sampleing</span></span>
+<span id="cb215-2"><a href="categorical-data.html#cb215-2" tabindex="-1"></a>n <span class="ot">=</span> <span class="dv">200</span> <span class="co"># number in each group</span></span>
+<span id="cb215-3"><a href="categorical-data.html#cb215-3" tabindex="-1"></a>dat <span class="ot">=</span> puf[<span class="fu">sample</span>(<span class="fu">nrow</span>(puf), <span class="at">size =</span> n), <span class="fu">c</span>(<span class="st">&#39;mrjflag&#39;</span>, <span class="st">&#39;lsdflag&#39;</span>)]</span>
+<span id="cb215-4"><a href="categorical-data.html#cb215-4" tabindex="-1"></a>Cohortmjlsdtab <span class="ot">=</span> <span class="fu">with</span>(dat, <span class="fu">table</span>(mrjflag, lsdflag))</span>
+<span id="cb215-5"><a href="categorical-data.html#cb215-5" tabindex="-1"></a>pander<span class="sc">::</span><span class="fu">pander</span>(descr<span class="sc">::</span><span class="fu">CrossTable</span>(Cohortmjlsdtab, <span class="at">prop.r =</span> <span class="cn">TRUE</span>, <span class="at">prop.t=</span><span class="cn">FALSE</span>, <span class="at">prop.c =</span> <span class="cn">FALSE</span>, <span class="at">prop.chisq =</span> <span class="cn">FALSE</span>))</span></code></pre></div>
 </details>
 <table style="width:64%;">
 <colgroup>
@@ -2480,15 +2481,15 @@ Row(%)</td>
 <li>Case-control studies sample conditional on one variable (e.g. diagnosis, or MJ use).</li>
 </ul>
 <details class="chunk-details"><summary class="chunk-summary"><span class="chunk-summary-text">Code</span></summary>
-<div class="sourceCode" id="cb215"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb215-1"><a href="categorical-data.html#cb215-1" tabindex="-1"></a><span class="co"># case control sampling</span></span>
-<span id="cb215-2"><a href="categorical-data.html#cb215-2" tabindex="-1"></a>n <span class="ot">=</span> <span class="dv">200</span> <span class="co"># number in each group</span></span>
-<span id="cb215-3"><a href="categorical-data.html#cb215-3" tabindex="-1"></a>lsdflag <span class="ot">=</span> <span class="fu">factor</span>(<span class="fu">c</span>(<span class="fu">sample</span>(puf<span class="sc">$</span>lsdflag[ puf<span class="sc">$</span>mrjflag<span class="sc">==</span><span class="st">&#39;no&#39;</span>], n), <span class="co"># samples lsd use for 200 people who have never used MJ</span></span>
-<span id="cb215-4"><a href="categorical-data.html#cb215-4" tabindex="-1"></a>                                  <span class="fu">sample</span>(puf<span class="sc">$</span>lsdflag[ puf<span class="sc">$</span>mrjflag<span class="sc">==</span><span class="st">&#39;yes&#39;</span>], n) ), <span class="co"># samples lsd use for 200 people who have used MJ</span></span>
-<span id="cb215-5"><a href="categorical-data.html#cb215-5" tabindex="-1"></a>                                <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">&#39;no&#39;</span>, <span class="st">&#39;yes&#39;</span>), <span class="at">labels=</span><span class="fu">c</span>(<span class="st">&#39;no&#39;</span>, <span class="st">&#39;yes&#39;</span>) )</span>
-<span id="cb215-6"><a href="categorical-data.html#cb215-6" tabindex="-1"></a>dat <span class="ot">=</span> <span class="fu">data.frame</span>(<span class="at">mrjflag=</span><span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">&#39;no&#39;</span>, <span class="st">&#39;yes&#39;</span>), <span class="at">each=</span>n),</span>
-<span id="cb215-7"><a href="categorical-data.html#cb215-7" tabindex="-1"></a>                 <span class="at">lsdflag=</span>lsdflag )</span>
-<span id="cb215-8"><a href="categorical-data.html#cb215-8" tabindex="-1"></a>CCmjlsdtab <span class="ot">=</span> <span class="fu">with</span>(dat, <span class="fu">table</span>(mrjflag, lsdflag))</span>
-<span id="cb215-9"><a href="categorical-data.html#cb215-9" tabindex="-1"></a>pander<span class="sc">::</span><span class="fu">pander</span>(descr<span class="sc">::</span><span class="fu">CrossTable</span>(CCmjlsdtab, <span class="at">prop.r =</span> <span class="cn">TRUE</span>, <span class="at">prop.t=</span><span class="cn">FALSE</span>, <span class="at">prop.c =</span> <span class="cn">FALSE</span>, <span class="at">prop.chisq =</span> <span class="cn">FALSE</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb216"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb216-1"><a href="categorical-data.html#cb216-1" tabindex="-1"></a><span class="co"># case control sampling</span></span>
+<span id="cb216-2"><a href="categorical-data.html#cb216-2" tabindex="-1"></a>n <span class="ot">=</span> <span class="dv">200</span> <span class="co"># number in each group</span></span>
+<span id="cb216-3"><a href="categorical-data.html#cb216-3" tabindex="-1"></a>lsdflag <span class="ot">=</span> <span class="fu">factor</span>(<span class="fu">c</span>(<span class="fu">sample</span>(puf<span class="sc">$</span>lsdflag[ puf<span class="sc">$</span>mrjflag<span class="sc">==</span><span class="st">&#39;no&#39;</span>], n), <span class="co"># samples lsd use for 200 people who have never used MJ</span></span>
+<span id="cb216-4"><a href="categorical-data.html#cb216-4" tabindex="-1"></a>                                  <span class="fu">sample</span>(puf<span class="sc">$</span>lsdflag[ puf<span class="sc">$</span>mrjflag<span class="sc">==</span><span class="st">&#39;yes&#39;</span>], n) ), <span class="co"># samples lsd use for 200 people who have used MJ</span></span>
+<span id="cb216-5"><a href="categorical-data.html#cb216-5" tabindex="-1"></a>                                <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">&#39;no&#39;</span>, <span class="st">&#39;yes&#39;</span>), <span class="at">labels=</span><span class="fu">c</span>(<span class="st">&#39;no&#39;</span>, <span class="st">&#39;yes&#39;</span>) )</span>
+<span id="cb216-6"><a href="categorical-data.html#cb216-6" tabindex="-1"></a>dat <span class="ot">=</span> <span class="fu">data.frame</span>(<span class="at">mrjflag=</span><span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">&#39;no&#39;</span>, <span class="st">&#39;yes&#39;</span>), <span class="at">each=</span>n),</span>
+<span id="cb216-7"><a href="categorical-data.html#cb216-7" tabindex="-1"></a>                 <span class="at">lsdflag=</span>lsdflag )</span>
+<span id="cb216-8"><a href="categorical-data.html#cb216-8" tabindex="-1"></a>CCmjlsdtab <span class="ot">=</span> <span class="fu">with</span>(dat, <span class="fu">table</span>(mrjflag, lsdflag))</span>
+<span id="cb216-9"><a href="categorical-data.html#cb216-9" tabindex="-1"></a>pander<span class="sc">::</span><span class="fu">pander</span>(descr<span class="sc">::</span><span class="fu">CrossTable</span>(CCmjlsdtab, <span class="at">prop.r =</span> <span class="cn">TRUE</span>, <span class="at">prop.t=</span><span class="cn">FALSE</span>, <span class="at">prop.c =</span> <span class="cn">FALSE</span>, <span class="at">prop.chisq =</span> <span class="cn">FALSE</span>))</span></code></pre></div>
 </details>
 <table style="width:62%;">
 <colgroup>
@@ -2615,16 +2616,16 @@ P(X_i=j, Y_i = k) = P(X_i =j)P(Y_i=k)
 <li>Implies independence of the two variables.</li>
 </ul>
 <details class="chunk-details"><summary class="chunk-summary"><span class="chunk-summary-text">Code</span></summary>
-<div class="sourceCode" id="cb216"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb216-1"><a href="categorical-data.html#cb216-1" tabindex="-1"></a><span class="co"># how should I compute the null probabilities for this?</span></span>
-<span id="cb216-2"><a href="categorical-data.html#cb216-2" tabindex="-1"></a>cs <span class="ot">=</span> <span class="fu">colSums</span>(CCmjlsdtab)</span>
-<span id="cb216-3"><a href="categorical-data.html#cb216-3" tabindex="-1"></a>pihat <span class="ot">=</span> cs[<span class="dv">2</span>]<span class="sc">/</span>(cs[<span class="dv">2</span>]<span class="sc">+</span> cs[<span class="dv">1</span>])</span>
-<span id="cb216-4"><a href="categorical-data.html#cb216-4" tabindex="-1"></a>nullprobs <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">1</span><span class="sc">-</span>pihat, <span class="dv">1</span><span class="sc">-</span>pihat, pihat, pihat), <span class="at">nrow=</span><span class="dv">2</span>)</span>
-<span id="cb216-5"><a href="categorical-data.html#cb216-5" tabindex="-1"></a><span class="co">#chisq.test(CCmjlsdtab, p = nullprobs)</span></span>
-<span id="cb216-6"><a href="categorical-data.html#cb216-6" tabindex="-1"></a>CC <span class="ot">=</span> <span class="fu">chisq.test</span>(CCmjlsdtab, <span class="at">p=</span>nullprobs)</span>
-<span id="cb216-7"><a href="categorical-data.html#cb216-7" tabindex="-1"></a></span>
-<span id="cb216-8"><a href="categorical-data.html#cb216-8" tabindex="-1"></a><span class="co"># also tests the same thing</span></span>
-<span id="cb216-9"><a href="categorical-data.html#cb216-9" tabindex="-1"></a>othernull <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">rep</span>(<span class="dv">1</span><span class="sc">/</span><span class="dv">4</span>, <span class="dv">4</span>), <span class="at">nrow=</span><span class="dv">2</span>)</span>
-<span id="cb216-10"><a href="categorical-data.html#cb216-10" tabindex="-1"></a><span class="fu">chisq.test</span>(CCmjlsdtab, <span class="at">p=</span>othernull, <span class="at">correct =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb217"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb217-1"><a href="categorical-data.html#cb217-1" tabindex="-1"></a><span class="co"># how should I compute the null probabilities for this?</span></span>
+<span id="cb217-2"><a href="categorical-data.html#cb217-2" tabindex="-1"></a>cs <span class="ot">=</span> <span class="fu">colSums</span>(CCmjlsdtab)</span>
+<span id="cb217-3"><a href="categorical-data.html#cb217-3" tabindex="-1"></a>pihat <span class="ot">=</span> cs[<span class="dv">2</span>]<span class="sc">/</span>(cs[<span class="dv">2</span>]<span class="sc">+</span> cs[<span class="dv">1</span>])</span>
+<span id="cb217-4"><a href="categorical-data.html#cb217-4" tabindex="-1"></a>nullprobs <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">1</span><span class="sc">-</span>pihat, <span class="dv">1</span><span class="sc">-</span>pihat, pihat, pihat), <span class="at">nrow=</span><span class="dv">2</span>)</span>
+<span id="cb217-5"><a href="categorical-data.html#cb217-5" tabindex="-1"></a><span class="co">#chisq.test(CCmjlsdtab, p = nullprobs)</span></span>
+<span id="cb217-6"><a href="categorical-data.html#cb217-6" tabindex="-1"></a>CC <span class="ot">=</span> <span class="fu">chisq.test</span>(CCmjlsdtab, <span class="at">p=</span>nullprobs)</span>
+<span id="cb217-7"><a href="categorical-data.html#cb217-7" tabindex="-1"></a></span>
+<span id="cb217-8"><a href="categorical-data.html#cb217-8" tabindex="-1"></a><span class="co"># also tests the same thing</span></span>
+<span id="cb217-9"><a href="categorical-data.html#cb217-9" tabindex="-1"></a>othernull <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">rep</span>(<span class="dv">1</span><span class="sc">/</span><span class="dv">4</span>, <span class="dv">4</span>), <span class="at">nrow=</span><span class="dv">2</span>)</span>
+<span id="cb217-10"><a href="categorical-data.html#cb217-10" tabindex="-1"></a><span class="fu">chisq.test</span>(CCmjlsdtab, <span class="at">p=</span>othernull, <span class="at">correct =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
 </details>
 <pre><code>## 
 ##  Pearson&#39;s Chi-squared test
@@ -2632,8 +2633,8 @@ P(X_i=j, Y_i = k) = P(X_i =j)P(Y_i=k)
 ## data:  CCmjlsdtab
 ## X-squared = 46.927, df = 1, p-value = 7.367e-12</code></pre>
 <details class="chunk-details"><summary class="chunk-summary"><span class="chunk-summary-text">Code</span></summary>
-<div class="sourceCode" id="cb218"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb218-1"><a href="categorical-data.html#cb218-1" tabindex="-1"></a><span class="co">#pander::pander(descr::CrossTable(CCmjlsdtab, chisq=TRUE, expected=TRUE, prop.t=FALSE, prop.c = FALSE,prop.chisq=FALSE))</span></span>
-<span id="cb218-2"><a href="categorical-data.html#cb218-2" tabindex="-1"></a>descr<span class="sc">::</span><span class="fu">CrossTable</span>(CCmjlsdtab, <span class="at">chisq=</span><span class="cn">TRUE</span>, <span class="at">expected=</span><span class="cn">TRUE</span>, <span class="at">prop.t=</span><span class="cn">FALSE</span>, <span class="at">prop.c =</span> <span class="cn">FALSE</span>,<span class="at">prop.chisq=</span><span class="cn">FALSE</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb219"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb219-1"><a href="categorical-data.html#cb219-1" tabindex="-1"></a><span class="co">#pander::pander(descr::CrossTable(CCmjlsdtab, chisq=TRUE, expected=TRUE, prop.t=FALSE, prop.c = FALSE,prop.chisq=FALSE))</span></span>
+<span id="cb219-2"><a href="categorical-data.html#cb219-2" tabindex="-1"></a>descr<span class="sc">::</span><span class="fu">CrossTable</span>(CCmjlsdtab, <span class="at">chisq=</span><span class="cn">TRUE</span>, <span class="at">expected=</span><span class="cn">TRUE</span>, <span class="at">prop.t=</span><span class="cn">FALSE</span>, <span class="at">prop.c =</span> <span class="cn">FALSE</span>,<span class="at">prop.chisq=</span><span class="cn">FALSE</span>)</span></code></pre></div>
 </details>
 <pre><code>##    Cell Contents 
 ## |-------------------------|
@@ -2667,18 +2668,18 @@ P(X_i=j, Y_i = k) = P(X_i =j)P(Y_i=k)
 ## ------------------------------------------------------------
 ## Chi^2 = 44.71934      d.f. = 1      p = 2.27e-11</code></pre>
 <details class="chunk-details"><summary class="chunk-summary"><span class="chunk-summary-text">Code</span></summary>
-<div class="sourceCode" id="cb220"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb220-1"><a href="categorical-data.html#cb220-1" tabindex="-1"></a><span class="co"># how should I compute the null probabilities for this?</span></span>
-<span id="cb220-2"><a href="categorical-data.html#cb220-2" tabindex="-1"></a>cs <span class="ot">=</span> <span class="fu">colSums</span>(Cohortmjlsdtab)</span>
-<span id="cb220-3"><a href="categorical-data.html#cb220-3" tabindex="-1"></a>rs <span class="ot">=</span> <span class="fu">rowSums</span>(Cohortmjlsdtab)</span>
-<span id="cb220-4"><a href="categorical-data.html#cb220-4" tabindex="-1"></a>pihat <span class="ot">=</span> cs[<span class="dv">2</span>]<span class="sc">/</span>(cs[<span class="dv">2</span>]<span class="sc">+</span> cs[<span class="dv">1</span>])</span>
-<span id="cb220-5"><a href="categorical-data.html#cb220-5" tabindex="-1"></a>pihat2 <span class="ot">=</span> rs[<span class="dv">2</span>]<span class="sc">/</span>(cs[<span class="dv">2</span>]<span class="sc">+</span> cs[<span class="dv">1</span>])</span>
-<span id="cb220-6"><a href="categorical-data.html#cb220-6" tabindex="-1"></a>nullprobs <span class="ot">=</span> <span class="fu">outer</span>(<span class="fu">c</span>(<span class="dv">1</span><span class="sc">-</span>pihat2, pihat2), <span class="fu">c</span>(<span class="dv">1</span><span class="sc">-</span>pihat, pihat))</span>
-<span id="cb220-7"><a href="categorical-data.html#cb220-7" tabindex="-1"></a><span class="co">#chisq.test(CCmjlsdtab, p = nullprobs)</span></span>
-<span id="cb220-8"><a href="categorical-data.html#cb220-8" tabindex="-1"></a>cohort <span class="ot">=</span> <span class="fu">chisq.test</span>(Cohortmjlsdtab, <span class="at">p =</span> nullprobs)</span>
-<span id="cb220-9"><a href="categorical-data.html#cb220-9" tabindex="-1"></a></span>
-<span id="cb220-10"><a href="categorical-data.html#cb220-10" tabindex="-1"></a><span class="co"># also tests the same thing</span></span>
-<span id="cb220-11"><a href="categorical-data.html#cb220-11" tabindex="-1"></a>othernull <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">rep</span>(<span class="dv">1</span><span class="sc">/</span><span class="dv">4</span>, <span class="dv">4</span>), <span class="at">nrow=</span><span class="dv">2</span>)</span>
-<span id="cb220-12"><a href="categorical-data.html#cb220-12" tabindex="-1"></a><span class="fu">chisq.test</span>(Cohortmjlsdtab, <span class="at">p=</span>othernull)</span></code></pre></div>
+<div class="sourceCode" id="cb221"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb221-1"><a href="categorical-data.html#cb221-1" tabindex="-1"></a><span class="co"># how should I compute the null probabilities for this?</span></span>
+<span id="cb221-2"><a href="categorical-data.html#cb221-2" tabindex="-1"></a>cs <span class="ot">=</span> <span class="fu">colSums</span>(Cohortmjlsdtab)</span>
+<span id="cb221-3"><a href="categorical-data.html#cb221-3" tabindex="-1"></a>rs <span class="ot">=</span> <span class="fu">rowSums</span>(Cohortmjlsdtab)</span>
+<span id="cb221-4"><a href="categorical-data.html#cb221-4" tabindex="-1"></a>pihat <span class="ot">=</span> cs[<span class="dv">2</span>]<span class="sc">/</span>(cs[<span class="dv">2</span>]<span class="sc">+</span> cs[<span class="dv">1</span>])</span>
+<span id="cb221-5"><a href="categorical-data.html#cb221-5" tabindex="-1"></a>pihat2 <span class="ot">=</span> rs[<span class="dv">2</span>]<span class="sc">/</span>(cs[<span class="dv">2</span>]<span class="sc">+</span> cs[<span class="dv">1</span>])</span>
+<span id="cb221-6"><a href="categorical-data.html#cb221-6" tabindex="-1"></a>nullprobs <span class="ot">=</span> <span class="fu">outer</span>(<span class="fu">c</span>(<span class="dv">1</span><span class="sc">-</span>pihat2, pihat2), <span class="fu">c</span>(<span class="dv">1</span><span class="sc">-</span>pihat, pihat))</span>
+<span id="cb221-7"><a href="categorical-data.html#cb221-7" tabindex="-1"></a><span class="co">#chisq.test(CCmjlsdtab, p = nullprobs)</span></span>
+<span id="cb221-8"><a href="categorical-data.html#cb221-8" tabindex="-1"></a>cohort <span class="ot">=</span> <span class="fu">chisq.test</span>(Cohortmjlsdtab, <span class="at">p =</span> nullprobs)</span>
+<span id="cb221-9"><a href="categorical-data.html#cb221-9" tabindex="-1"></a></span>
+<span id="cb221-10"><a href="categorical-data.html#cb221-10" tabindex="-1"></a><span class="co"># also tests the same thing</span></span>
+<span id="cb221-11"><a href="categorical-data.html#cb221-11" tabindex="-1"></a>othernull <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">rep</span>(<span class="dv">1</span><span class="sc">/</span><span class="dv">4</span>, <span class="dv">4</span>), <span class="at">nrow=</span><span class="dv">2</span>)</span>
+<span id="cb221-12"><a href="categorical-data.html#cb221-12" tabindex="-1"></a><span class="fu">chisq.test</span>(Cohortmjlsdtab, <span class="at">p=</span>othernull)</span></code></pre></div>
 </details>
 <pre><code>## 
 ##  Pearson&#39;s Chi-squared test with Yates&#39; continuity correction
@@ -2686,9 +2687,9 @@ P(X_i=j, Y_i = k) = P(X_i =j)P(Y_i=k)
 ## data:  Cohortmjlsdtab
 ## X-squared = 28.705, df = 1, p-value = 8.428e-08</code></pre>
 <details class="chunk-details"><summary class="chunk-summary"><span class="chunk-summary-text">Code</span></summary>
-<div class="sourceCode" id="cb222"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb222-1"><a href="categorical-data.html#cb222-1" tabindex="-1"></a><span class="co"># renders it in a nice output, but removes test</span></span>
-<span id="cb222-2"><a href="categorical-data.html#cb222-2" tabindex="-1"></a><span class="co">#pander::pander(descr::CrossTable(CCmjlsdtab, chisq=TRUE, expected=TRUE, prop.t=FALSE, prop.c = FALSE,prop.chisq=FALSE))</span></span>
-<span id="cb222-3"><a href="categorical-data.html#cb222-3" tabindex="-1"></a>descr<span class="sc">::</span><span class="fu">CrossTable</span>(CCmjlsdtab, <span class="at">chisq=</span><span class="cn">TRUE</span>, <span class="at">expected=</span><span class="cn">TRUE</span>, <span class="at">prop.t=</span><span class="cn">FALSE</span>, <span class="at">prop.c =</span> <span class="cn">FALSE</span>,<span class="at">prop.chisq=</span><span class="cn">FALSE</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb223"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb223-1"><a href="categorical-data.html#cb223-1" tabindex="-1"></a><span class="co"># renders it in a nice output, but removes test</span></span>
+<span id="cb223-2"><a href="categorical-data.html#cb223-2" tabindex="-1"></a><span class="co">#pander::pander(descr::CrossTable(CCmjlsdtab, chisq=TRUE, expected=TRUE, prop.t=FALSE, prop.c = FALSE,prop.chisq=FALSE))</span></span>
+<span id="cb223-3"><a href="categorical-data.html#cb223-3" tabindex="-1"></a>descr<span class="sc">::</span><span class="fu">CrossTable</span>(CCmjlsdtab, <span class="at">chisq=</span><span class="cn">TRUE</span>, <span class="at">expected=</span><span class="cn">TRUE</span>, <span class="at">prop.t=</span><span class="cn">FALSE</span>, <span class="at">prop.c =</span> <span class="cn">FALSE</span>,<span class="at">prop.chisq=</span><span class="cn">FALSE</span>)</span></code></pre></div>
 </details>
 <pre><code>##    Cell Contents 
 ## |-------------------------|
@@ -2732,10 +2733,10 @@ P(X_i=j, Y_i = k) = P(X_i =j)P(Y_i=k)
 </ul></li>
 </ul>
 <details class="chunk-details"><summary class="chunk-summary"><span class="chunk-summary-text">Code</span></summary>
-<div class="sourceCode" id="cb224"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb224-1"><a href="categorical-data.html#cb224-1" tabindex="-1"></a>puf<span class="sc">$</span>age <span class="ot">=</span> <span class="fu">as.character</span>(puf<span class="sc">$</span>age)</span>
-<span id="cb224-2"><a href="categorical-data.html#cb224-2" tabindex="-1"></a><span class="co"># looking at subset of ages 18 and older</span></span>
-<span id="cb224-3"><a href="categorical-data.html#cb224-3" tabindex="-1"></a>agelsdtab <span class="ot">=</span> <span class="fu">with</span>(puf[puf<span class="sc">$</span>age<span class="sc">!=</span><span class="st">&#39;12-17&#39;</span>,], <span class="fu">table</span>(age, lsdflag))</span>
-<span id="cb224-4"><a href="categorical-data.html#cb224-4" tabindex="-1"></a>descr<span class="sc">::</span><span class="fu">CrossTable</span>(agelsdtab, <span class="at">chisq=</span><span class="cn">TRUE</span>, <span class="at">expected=</span><span class="cn">TRUE</span>, <span class="at">prop.t=</span><span class="cn">FALSE</span>, <span class="at">prop.c =</span> <span class="cn">FALSE</span>,<span class="at">prop.chisq=</span><span class="cn">FALSE</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb225"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb225-1"><a href="categorical-data.html#cb225-1" tabindex="-1"></a>puf<span class="sc">$</span>age <span class="ot">=</span> <span class="fu">as.character</span>(puf<span class="sc">$</span>age)</span>
+<span id="cb225-2"><a href="categorical-data.html#cb225-2" tabindex="-1"></a><span class="co"># looking at subset of ages 18 and older</span></span>
+<span id="cb225-3"><a href="categorical-data.html#cb225-3" tabindex="-1"></a>agelsdtab <span class="ot">=</span> <span class="fu">with</span>(puf[puf<span class="sc">$</span>age<span class="sc">!=</span><span class="st">&#39;12-17&#39;</span>,], <span class="fu">table</span>(age, lsdflag))</span>
+<span id="cb225-4"><a href="categorical-data.html#cb225-4" tabindex="-1"></a>descr<span class="sc">::</span><span class="fu">CrossTable</span>(agelsdtab, <span class="at">chisq=</span><span class="cn">TRUE</span>, <span class="at">expected=</span><span class="cn">TRUE</span>, <span class="at">prop.t=</span><span class="cn">FALSE</span>, <span class="at">prop.c =</span> <span class="cn">FALSE</span>,<span class="at">prop.chisq=</span><span class="cn">FALSE</span>)</span></code></pre></div>
 </details>
 <pre><code>##    Cell Contents 
 ## |-------------------------|

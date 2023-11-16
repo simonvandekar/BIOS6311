@@ -61,6 +61,10 @@ library(RESI)
 
 This document includes all the course notes for Vanderbilt Biostatistics BIOS6311 *Principles of Modern Biostatistics*.
 
+## FINAL DECEMBER 7TH 2023 {.unnumbered}
+
+
+
 ## MIDTERM NOVEMBER 9TH 2023 {.unnumbered}
 
 From that Rice book above here are some good practice problems:
