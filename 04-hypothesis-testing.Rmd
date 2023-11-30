@@ -972,14 +972,14 @@ permutationTest = function(X, Y, nperm=1000){
  Tobs = t.test(Y[X==0], Y[X==1])$statistic
  # randomly permutes X
  Tperms = replicate(nperm, {Xperm = sample(X, replace=FALSE); t.test(Y[Xperm==0], Y[Xperm==1])$statistic} )
- c(Tobs=Tobs, pvalue=mean(abs(c(Tperms, Tobs))>=abs(Tobs)))
+ list(Tobs=Tobs, pvalue=mean(abs(c(Tperms, Tobs))>=abs(Tobs)), permutations = Tperms)
 }
 
 
 # In the subset of data
 y = hip$RIGHTHIPPO[ hip$DX !='AD' ]
 x = ifelse(hip$DX[hip$DX !='AD' ]=='MCI', 1, 0)
-permtest = permutationTest(Y=y, X = x)
+permtest = permutationTest(Y=y, X = x, nperm = 5000)
 wtest = wilcox.test(y[x==1], y[x==0], conf.int = TRUE)
 ttest = t.test(y[x==1], y[x==0])
 
